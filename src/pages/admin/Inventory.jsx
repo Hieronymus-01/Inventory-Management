@@ -83,8 +83,8 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white">
+            <div className="bg-base-100 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-base-200 sticky top-0 bg-base-100">
                     <h2 className="text-lg font-bold flex items-center gap-2">
                         <MdInventory className="text-black" />
                         {item ? 'Edit Item' : 'Add New Item'}
@@ -94,7 +94,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
 
                 <div className="px-6 py-5 space-y-4">
                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Barcode / Item Code *</label>
+                        <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Barcode / Item Code *</label>
                         <div className="flex gap-2">
                             <input type="text" className="input input-bordered w-full font-mono"
                                 value={form.barcode}
@@ -105,7 +105,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Item Name *</label>
+                        <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Item Name *</label>
                         <input type="text" className="input input-bordered w-full"
                             value={form.item_name}
                             onChange={e => setForm(p => ({ ...p, item_name: e.target.value }))}
@@ -114,7 +114,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Category</label>
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Category</label>
                             <select className="select select-bordered w-full" value={form.category}
                                 onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
                                 {['AC Unit', 'Parts', 'Supplies', 'Tools', 'Equipment'].map(c =>
@@ -122,7 +122,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
                             </select>
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Unit</label>
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Unit</label>
                             <select className="select select-bordered w-full" value={form.unit}
                                 onChange={e => setForm(p => ({ ...p, unit: e.target.value }))}>
                                 {['pcs', 'unit', 'set', 'meter', 'roll', 'tank', 'box', 'liter'].map(u =>
@@ -133,13 +133,13 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Brand</label>
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Brand</label>
                             <input type="text" className="input input-bordered w-full" value={form.brand}
                                 onChange={e => setForm(p => ({ ...p, brand: e.target.value }))}
                                 placeholder="e.g. Carrier, Daikin" />
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Model</label>
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Model</label>
                             <input type="text" className="input input-bordered w-full" value={form.model}
                                 onChange={e => setForm(p => ({ ...p, model: e.target.value }))}
                                 placeholder="e.g. XPower 1HP" />
@@ -148,19 +148,19 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
 
                     <div className="grid grid-cols-3 gap-4">
                         <div>
-                            <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Quantity</label>
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Quantity</label>
                             <input type="number" min="0" className="input input-bordered w-full"
                                 value={form.quantity}
                                 onChange={e => setForm(p => ({ ...p, quantity: parseInt(e.target.value) || 0 }))} />
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Reorder Level</label>
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Reorder Level</label>
                             <input type="number" min="0" className="input input-bordered w-full"
                                 value={form.reorder_level}
                                 onChange={e => setForm(p => ({ ...p, reorder_level: parseInt(e.target.value) || 0 }))} />
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Unit Price (₱)</label>
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Unit Price (₱)</label>
                             <input type="number" min="0" step="0.01" className="input input-bordered w-full"
                                 value={form.unit_price}
                                 onChange={e => setForm(p => ({ ...p, unit_price: parseFloat(e.target.value) || 0 }))} />
@@ -168,14 +168,14 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Storage Location</label>
+                        <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Storage Location</label>
                         <input type="text" className="input input-bordered w-full" value={form.location}
                             onChange={e => setForm(p => ({ ...p, location: e.target.value }))}
                             placeholder="e.g. Warehouse A, Shelf B1" />
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Description</label>
+                        <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Description</label>
                         <textarea className="textarea textarea-bordered w-full" rows={2}
                             value={form.description}
                             onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
@@ -183,7 +183,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
+                <div className="flex justify-end gap-3 px-6 py-4 border-t border-base-200 bg-base-200 rounded-b-2xl">
                     <button onClick={onClose} className="btn btn-ghost rounded-full">Cancel</button>
                     <button onClick={handleSave} disabled={saving} className="btn btn-neutral rounded-full">
                         {saving ? 'Saving...' : item ? 'Save Changes' : 'Add Item'}
@@ -232,23 +232,23 @@ const StockModal = ({ item, onClose, onSave, profile }) => {
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <div className="bg-base-100 rounded-2xl shadow-2xl w-full max-w-md">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-base-200">
                     <h2 className="text-lg font-bold">Stock Update</h2>
                     <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle"><MdClose /></button>
                 </div>
                 <div className="px-6 py-5 space-y-4">
-                    <div className="bg-gray-50 rounded-xl p-4">
+                    <div className="bg-base-200 rounded-xl p-4">
                         <p className="font-bold text-sm">{item.item_name}</p>
-                        <p className="text-xs text-gray-400 font-mono">{item.barcode}</p>
+                        <p className="text-xs text-base-content/40 font-mono">{item.barcode}</p>
                         <p className="text-sm mt-1">Current Stock: <span className="font-bold">{item.quantity} {item.unit}</span></p>
                     </div>
 
-                    <div className="flex rounded-full bg-gray-100 p-1">
+                    <div className="flex rounded-full bg-base-200 p-1">
                         {['stock_in', 'stock_out'].map(t => (
                             <button key={t} onClick={() => setType(t)}
                                 className={`flex-1 py-2 text-sm font-medium rounded-full transition-colors flex items-center justify-center gap-2
-                  ${type === t ? 'bg-white shadow text-black' : 'text-gray-500'}`}>
+                  ${type === t ? 'bg-base-100 shadow text-black' : 'text-base-content/60'}`}>
                                 {t === 'stock_in' ? <MdTrendingUp className="text-green-500" /> : <MdTrendingDown className="text-red-500" />}
                                 {t === 'stock_in' ? 'Stock In' : 'Stock Out'}
                             </button>
@@ -256,7 +256,7 @@ const StockModal = ({ item, onClose, onSave, profile }) => {
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Quantity</label>
+                        <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Quantity</label>
                         <input type="number" min="1" className="input input-bordered w-full text-xl font-bold text-center"
                             value={qty} onChange={e => setQty(parseInt(e.target.value) || 0)} />
                     </div>
@@ -269,13 +269,13 @@ const StockModal = ({ item, onClose, onSave, profile }) => {
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Notes</label>
+                        <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Notes</label>
                         <input type="text" className="input input-bordered w-full" value={notes}
                             onChange={e => setNotes(e.target.value)}
                             placeholder="e.g. Received from supplier, Used for Job #001" />
                     </div>
                 </div>
-                <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
+                <div className="flex justify-end gap-3 px-6 py-4 border-t border-base-200 bg-base-200 rounded-b-2xl">
                     <button onClick={onClose} className="btn btn-ghost rounded-full">Cancel</button>
                     <button onClick={handleSave} disabled={saving}
                         className={`btn rounded-full ${type === 'stock_in' ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-red-500 text-white hover:bg-red-600'}`}>
@@ -363,7 +363,7 @@ const Inventory = () => {
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h1 className="text-2xl font-bold">Inventory</h1>
-                    <p className="text-gray-500 text-sm">AC units, parts, supplies, tools & equipment</p>
+                    <p className="text-base-content/60 text-sm">AC units, parts, supplies, tools & equipment</p>
                 </div>
                 {isAdmin && (
                     <button
@@ -387,12 +387,12 @@ const Inventory = () => {
                     { label: 'Out of Stock', value: outOfStock, sub: 'unavailable', color: 'text-red-500', warn: outOfStock > 0 },
                     { label: 'Total Value', value: `₱${totalValue.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`, sub: 'inventory worth', color: 'text-black' },
                 ].map(({ label, value, sub, color, warn }) => (
-                    <div key={label} className="border border-gray-200 rounded-xl p-5 bg-white">
-                        <p className="text-sm text-gray-500 mb-1 flex items-center gap-1">
+                    <div key={label} className="border border-base-200 rounded-xl p-5 bg-base-100">
+                        <p className="text-sm text-base-content/60 mb-1 flex items-center gap-1">
                             {warn && <MdWarning className="text-orange-400" />} {label}
                         </p>
                         <p className={`text-2xl font-bold ${color}`}>{value}</p>
-                        <p className="text-xs text-gray-400 mt-1">{sub}</p>
+                        <p className="text-xs text-base-content/40 mt-1">{sub}</p>
                     </div>
                 ))}
             </div>
@@ -400,7 +400,7 @@ const Inventory = () => {
             {/* Filters */}
             <div className="flex gap-3 mb-4 flex-wrap">
                 <div className="relative flex-1 min-w-48">
-                    <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
                     <input type="text" className="input input-bordered input-sm w-full pl-9"
                         placeholder="Search items, barcodes, brands..."
                         value={search} onChange={e => setSearch(e.target.value)} />
@@ -421,52 +421,52 @@ const Inventory = () => {
             </div>
 
             {/* Table */}
-            <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
+            <div className="border border-base-200 rounded-xl bg-base-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="table table-sm w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead className="bg-base-200 border-b border-base-200">
                             <tr>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Barcode</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Item</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Category</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Brand/Model</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Qty</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Status</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Unit Price</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Location</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Barcode</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Item</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Category</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Brand/Model</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Qty</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Status</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Unit Price</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Location</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={9} className="text-center py-8 text-gray-400">Loading...</td></tr>
+                                <tr><td colSpan={9} className="text-center py-8 text-base-content/40">Loading...</td></tr>
                             ) : filtered.length === 0 ? (
-                                <tr><td colSpan={9} className="text-center py-8 text-gray-400">No items found.</td></tr>
+                                <tr><td colSpan={9} className="text-center py-8 text-base-content/40">No items found.</td></tr>
                             ) : filtered.map(item => (
-                                <tr key={item.id} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
+                                <tr key={item.id} className="hover:bg-base-200 border-b border-base-200 last:border-0">
                                     <td>
-                                        <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded flex items-center gap-1">
-                                            <FaBarcode className="text-gray-400 text-xs" />{item.barcode}
+                                        <span className="font-mono text-xs bg-base-200 px-2 py-1 rounded flex items-center gap-1">
+                                            <FaBarcode className="text-base-content/40 text-xs" />{item.barcode}
                                         </span>
                                     </td>
                                     <td>
                                         <p className="font-semibold text-sm">{item.item_name}</p>
-                                        {item.description && <p className="text-xs text-gray-400 truncate max-w-32">{item.description}</p>}
+                                        {item.description && <p className="text-xs text-base-content/40 truncate max-w-32">{item.description}</p>}
                                     </td>
                                     <td><CategoryBadge category={item.category} /></td>
                                     <td>
                                         <p className="text-sm">{item.brand}</p>
-                                        <p className="text-xs text-gray-400">{item.model}</p>
+                                        <p className="text-xs text-base-content/40">{item.model}</p>
                                     </td>
                                     <td>
                                         <span className={`font-bold text-sm ${item.quantity === 0 ? 'text-red-500' : item.quantity <= item.reorder_level ? 'text-orange-500' : 'text-black'}`}>
                                             {item.quantity}
                                         </span>
-                                        <span className="text-xs text-gray-400 ml-1">{item.unit}</span>
+                                        <span className="text-xs text-base-content/40 ml-1">{item.unit}</span>
                                     </td>
                                     <td><StockStatus quantity={item.quantity} reorderLevel={item.reorder_level} /></td>
                                     <td className="text-sm font-medium">₱{Number(item.unit_price).toLocaleString()}</td>
-                                    <td className="text-xs text-gray-500">{item.location || '—'}</td>
+                                    <td className="text-xs text-base-content/60">{item.location || '—'}</td>
                                     <td>
                                         <div className="flex gap-1">
                                             {/* Stock In/Out — available to ALL */}
@@ -497,7 +497,7 @@ const Inventory = () => {
                         </tbody>
                     </table>
                 </div>
-                <div className="px-4 py-3 border-t border-gray-100 text-xs text-gray-400">
+                <div className="px-4 py-3 border-t border-base-200 text-xs text-base-content/40">
                     Showing {filtered.length} of {totalItems} items
                     {!isAdmin && <span className="ml-2 text-orange-400">• Staff view: edit/delete disabled</span>}
                 </div>

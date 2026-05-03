@@ -95,30 +95,30 @@ const EditProfile = () => {
         <AdminLayout>
             <div className="mb-6">
                 <h1 className="text-2xl font-bold">Edit Profile</h1>
-                <p className="text-gray-500 text-sm">Update your personal information and password</p>
+                <p className="text-base-content/60 text-sm">Update your personal information and password</p>
             </div>
 
             <div className="max-w-2xl space-y-6">
 
                 {/* Avatar / Info Card */}
-                <div className="border border-gray-200 rounded-xl p-6 bg-white flex items-center gap-5">
-                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                        <FaUser className="text-gray-400 text-2xl" />
+                <div className="border border-base-200 rounded-xl p-6 bg-base-100 flex items-center gap-5">
+                    <div className="w-16 h-16 rounded-full bg-base-200 flex items-center justify-center flex-shrink-0">
+                        <FaUser className="text-base-content/40 text-2xl" />
                     </div>
                     <div>
                         <p className="text-lg font-bold">{profile?.name || 'No name'}</p>
-                        <p className="text-sm text-gray-500">{profile?.email}</p>
+                        <p className="text-sm text-base-content/60">{profile?.email}</p>
                         <span className={`text-xs font-bold px-2 py-0.5 rounded-full mt-1 inline-block
-              ${profile?.role === 'admin' ? 'bg-black text-white' : 'bg-gray-100 text-gray-500'}`}>
+              ${profile?.role === 'admin' ? 'bg-black text-white' : 'bg-base-200 text-base-content/60'}`}>
                             {profile?.role === 'admin' ? '⚙ Admin' : '👤 Staff'}
                         </span>
                     </div>
                 </div>
 
                 {/* Profile Info Form */}
-                <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
-                        <MdPerson className="text-base text-gray-500" />
+                <div className="border border-base-200 rounded-xl bg-base-100 overflow-hidden">
+                    <div className="px-6 py-4 border-b border-base-200 bg-base-200 flex items-center gap-2">
+                        <MdPerson className="text-base text-base-content/60" />
                         <p className="font-semibold text-sm">Personal Information</p>
                     </div>
 
@@ -135,7 +135,7 @@ const EditProfile = () => {
                         )}
 
                         <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">
+                            <label className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1 block">
                                 Full Name *
                             </label>
                             <input
@@ -148,20 +148,20 @@ const EditProfile = () => {
                         </div>
 
                         <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">
+                            <label className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1 block">
                                 Email Address
                             </label>
                             <input
                                 type="email"
-                                className="input input-bordered w-full bg-gray-50 cursor-not-allowed"
+                                className="input input-bordered w-full bg-base-200 cursor-not-allowed"
                                 value={profile?.email || ''}
                                 disabled
                             />
-                            <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
+                            <p className="text-xs text-base-content/40 mt-1">Email cannot be changed</p>
                         </div>
 
                         <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">
+                            <label className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1 block">
                                 Phone Number
                             </label>
                             <input
@@ -174,20 +174,20 @@ const EditProfile = () => {
                         </div>
 
                         <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">
+                            <label className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1 block">
                                 Role
                             </label>
                             <input
                                 type="text"
-                                className="input input-bordered w-full bg-gray-50 cursor-not-allowed capitalize"
+                                className="input input-bordered w-full bg-base-200 cursor-not-allowed capitalize"
                                 value={profile?.role || ''}
                                 disabled
                             />
-                            <p className="text-xs text-gray-400 mt-1">Role can only be changed by an admin</p>
+                            <p className="text-xs text-base-content/40 mt-1">Role can only be changed by an admin</p>
                         </div>
                     </div>
 
-                    <div className="flex justify-end px-6 py-4 border-t border-gray-100 bg-gray-50">
+                    <div className="flex justify-end px-6 py-4 border-t border-base-200 bg-base-200">
                         <button
                             onClick={handleProfileSave}
                             disabled={profileLoading}
@@ -199,9 +199,9 @@ const EditProfile = () => {
                 </div>
 
                 {/* Change Password Form */}
-                <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
-                        <MdLock className="text-base text-gray-500" />
+                <div className="border border-base-200 rounded-xl bg-base-100 overflow-hidden">
+                    <div className="px-6 py-4 border-b border-base-200 bg-base-200 flex items-center gap-2">
+                        <MdLock className="text-base text-base-content/60" />
                         <p className="font-semibold text-sm">Change Password</p>
                     </div>
 
@@ -218,7 +218,7 @@ const EditProfile = () => {
                         )}
 
                         <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">
+                            <label className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1 block">
                                 Current Password
                             </label>
                             <input
@@ -232,7 +232,7 @@ const EditProfile = () => {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">
+                                <label className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1 block">
                                     New Password
                                 </label>
                                 <input
@@ -244,7 +244,7 @@ const EditProfile = () => {
                                 />
                             </div>
                             <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">
+                                <label className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1 block">
                                     Confirm New Password
                                 </label>
                                 <input
@@ -257,10 +257,10 @@ const EditProfile = () => {
                             </div>
                         </div>
 
-                        <p className="text-xs text-gray-400">Password must be at least 6 characters long.</p>
+                        <p className="text-xs text-base-content/40">Password must be at least 6 characters long.</p>
                     </div>
 
-                    <div className="flex justify-end px-6 py-4 border-t border-gray-100 bg-gray-50">
+                    <div className="flex justify-end px-6 py-4 border-t border-base-200 bg-base-200">
                         <button
                             onClick={handlePasswordSave}
                             disabled={passwordLoading}

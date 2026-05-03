@@ -97,24 +97,24 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
     }
 
     return (
-        <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
-                <p className="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-2">
+        <div className="border border-base-200 rounded-xl bg-base-100 overflow-hidden">
+            <div className="px-4 py-3 border-b border-base-200 bg-base-200 flex items-center justify-between">
+                <p className="text-xs font-bold text-base-content/70 uppercase tracking-wider flex items-center gap-2">
                     <MdQrCodeScanner className="text-base text-black" />
                     {label}
                 </p>
-                <div className="flex rounded-full bg-gray-200 p-0.5 gap-0.5">
+                <div className="flex rounded-full bg-base-300 p-0.5 gap-0.5">
                     <button
                         onClick={() => switchMode('keyboard')}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all
-              ${mode === 'keyboard' ? 'bg-black text-white shadow' : 'text-gray-500 hover:text-black'}`}>
+              ${mode === 'keyboard' ? 'bg-black text-white shadow' : 'text-base-content/60 hover:text-black'}`}>
                         <FaKeyboard className="text-xs" />
                         <span className="hidden sm:inline">Physical</span>
                     </button>
                     <button
                         onClick={() => switchMode('camera')}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all
-              ${mode === 'camera' ? 'bg-black text-white shadow' : 'text-gray-500 hover:text-black'}`}>
+              ${mode === 'camera' ? 'bg-black text-white shadow' : 'text-base-content/60 hover:text-black'}`}>
                         <FaCamera className="text-xs" />
                         <span className="hidden sm:inline">Camera</span>
                     </button>
@@ -126,7 +126,7 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
                     <div className="space-y-2">
                         <div className="flex gap-2">
                             <div className="relative flex-1">
-                                <FaBarcode className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                                <FaBarcode className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40 text-lg" />
                                 <input
                                     ref={keyboardRef}
                                     type="text"
@@ -146,7 +146,7 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
                                 <span className="hidden sm:inline">Search</span>
                             </button>
                         </div>
-                        <p className="text-xs text-gray-400 flex items-center gap-1">
+                        <p className="text-xs text-base-content/40 flex items-center gap-1">
                             <FaKeyboard className="text-xs" />
                             Connect a USB/Bluetooth barcode scanner — it will type the barcode automatically and press Enter
                         </p>
@@ -157,7 +157,7 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
                     <div className="space-y-3">
                         {cameras.length > 1 && (
                             <div className="flex gap-2 items-center">
-                                <MdFlipCameraAndroid className="text-gray-400 flex-shrink-0" />
+                                <MdFlipCameraAndroid className="text-base-content/40 flex-shrink-0" />
                                 <select
                                     className="select select-bordered select-sm flex-1"
                                     value={selectedCamera}
@@ -206,9 +206,9 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
                             )}
                             {!scanning && (
                                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gray-900">
-                                    <FaCamera className="text-gray-500 text-4xl" />
-                                    <p className="text-gray-500 text-sm">Camera is off</p>
-                                    <p className="text-gray-600 text-xs">Click Start Scanning to activate</p>
+                                    <FaCamera className="text-base-content/60 text-4xl" />
+                                    <p className="text-base-content/60 text-sm">Camera is off</p>
+                                    <p className="text-base-content/70 text-xs">Click Start Scanning to activate</p>
                                 </div>
                             )}
                         </div>
@@ -231,7 +231,7 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
                             )}
                         </div>
 
-                        <p className="text-xs text-gray-400 flex items-center gap-1">
+                        <p className="text-xs text-base-content/40 flex items-center gap-1">
                             <FaCamera className="text-xs" />
                             Point camera at any barcode or QR code — it will auto-detect and scan
                         </p>

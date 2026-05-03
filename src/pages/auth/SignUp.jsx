@@ -2,23 +2,24 @@ import React, { useEffect, useContext, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../../utils/Supabase'
 import { SessionContext } from '../../contexts/SessionContext'
-import { MdAcUnit } from 'react-icons/md'
+import { useTheme } from '../../contexts/ThemeContext'
+import { MdAcUnit, MdDarkMode, MdLightMode } from 'react-icons/md'
 import { FaPaperPlane, FaEye, FaEyeSlash, FaCheck } from 'react-icons/fa'
 
 const SignUp = () => {
     const { session } = useContext(SessionContext)
+    const { theme, toggleTheme } = useTheme()
     const navigate = useNavigate()
     const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
-    const [step, setStep] = useState(1) // 1 = form, 2 = success
+    const [step, setStep] = useState(1)
 
     useEffect(() => {
         if (session) navigate('/')
     }, [session])
 
-    // Password strength checker
     const getPasswordStrength = (pwd) => {
         if (!pwd) return { score: 0, label: '', color: '' }
         let score = 0
@@ -72,7 +73,6 @@ const SignUp = () => {
             <div className="hidden md:flex w-[420px] flex-shrink-0 relative overflow-hidden flex-col items-center justify-center"
                 style={{ background: 'linear-gradient(145deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%)' }}>
 
-                {/* Animated background circles */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full opacity-10"
                         style={{ background: 'radial-gradient(circle, #10b981, transparent)', animation: 'pulse 4s ease-in-out infinite' }} />
@@ -84,7 +84,6 @@ const SignUp = () => {
                         style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
                 </div>
 
-                {/* Floating icons */}
                 <div className="absolute top-16 right-8 opacity-10">
                     <MdAcUnit className="text-white text-6xl" style={{ animation: 'spin 20s linear infinite' }} />
                 </div>
@@ -92,7 +91,6 @@ const SignUp = () => {
                     <MdAcUnit className="text-white text-4xl" style={{ animation: 'spin 15s linear infinite reverse' }} />
                 </div>
 
-                {/* Logo */}
                 <div className="relative z-10 flex flex-col items-center text-center px-8">
                     <div className="relative mb-6">
                         <div className="absolute inset-0 rounded-3xl blur-xl opacity-40"
@@ -108,15 +106,13 @@ const SignUp = () => {
                         Inventory Management System
                     </p>
 
-                    {/* Steps indicator */}
                     <div className="w-full max-w-xs space-y-3">
                         <p className="text-white/40 text-xs uppercase tracking-widest font-bold mb-4">
                             Getting Started
                         </p>
                         {[
                             { num: '01', title: 'Create Account', desc: 'Fill in your details below' },
-                            { num: '02', title: 'Verify Email', desc: 'Check your inbox' },
-                            { num: '03', title: 'Start Managing', desc: 'Access your dashboard' },
+                            { num: '02', title: 'Start Managing', desc: 'Access your dashboard' },
                         ].map(({ num, title, desc }, i) => (
                             <div key={num} className="flex items-center gap-4 px-4 py-3 rounded-xl"
                                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -139,7 +135,17 @@ const SignUp = () => {
             </div>
 
             {/* ── RIGHT PANEL ── */}
-            <div className="flex-1 flex items-center justify-center bg-gray-50 px-6 py-12">
+            <div className="flex-1 flex items-center justify-center bg-base-200 px-6 py-12 relative">
+
+                {/* Theme toggle */}
+                <button
+                    onClick={toggleTheme}
+                    className="absolute top-5 right-5 btn btn-ghost btn-sm btn-circle text-base-content/60 hover:bg-base-300"
+                    title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                >
+                    {theme === 'light' ? <MdDarkMode className="text-lg" /> : <MdLightMode className="text-lg text-yellow-400" />}
+                </button>
+
                 <div className="w-full max-w-md">
 
                     {/* Mobile logo */}
@@ -149,34 +155,31 @@ const SignUp = () => {
                             <MdAcUnit className="text-white text-xl" />
                         </div>
                         <div>
-                            <p className="font-black text-gray-900 text-lg leading-none">AirCon IMS</p>
-                            <p className="text-gray-400 text-xs">Inventory Management System</p>
+                            <p className="font-black text-base-content text-lg leading-none">AirCon IMS</p>
+                            <p className="text-base-content/40 text-xs">Inventory Management System</p>
                         </div>
                     </div>
 
                     {/* ── SUCCESS STATE ── */}
                     {step === 2 ? (
-                        <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 text-center">
+                        <div className="bg-base-100 rounded-3xl shadow-xl p-8 border border-base-200 text-center">
                             <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
                                 style={{ background: 'linear-gradient(135deg, #059669, #0891b2)' }}>
                                 <FaCheck className="text-white text-3xl" />
                             </div>
-                            <h2 className="text-2xl font-black text-gray-900 mb-2">Account Created!</h2>
-                            <p className="text-gray-500 text-sm mb-2">
-                                Welcome to AirCon IMS, <span className="font-bold text-gray-700">{form.name}</span>!
+                            <h2 className="text-2xl font-black text-base-content mb-2">Account Created!</h2>
+                            <p className="text-base-content/60 text-sm mb-2">
+                                Welcome to AirCon IMS, <span className="font-bold text-base-content/80">{form.name}</span>!
                             </p>
-                            <p className="text-gray-400 text-xs mb-8">
-                                Check your email <span className="font-semibold text-gray-600">{form.email}</span> to verify your account, then sign in.
+                            <p className="text-base-content/40 text-xs mb-8">
+                                Check your email <span className="font-semibold text-base-content/70">{form.email}</span> to verify your account, then sign in.
                             </p>
-
-                            {/* Confetti dots */}
                             <div className="flex justify-center gap-2 mb-8">
                                 {['bg-blue-400', 'bg-green-400', 'bg-yellow-400', 'bg-pink-400', 'bg-purple-400'].map((c, i) => (
                                     <div key={i} className={`w-2 h-2 rounded-full ${c} animate-bounce`}
                                         style={{ animationDelay: `${i * 0.1}s` }} />
                                 ))}
                             </div>
-
                             <Link to="/login"
                                 className="w-full py-4 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:scale-[1.01]"
                                 style={{ background: 'linear-gradient(135deg, #1d4ed8, #0891b2)' }}>
@@ -187,30 +190,29 @@ const SignUp = () => {
                     ) : (
 
                         /* ── FORM STATE ── */
-                        <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+                        <div className="bg-base-100 rounded-3xl shadow-xl p-8 border border-base-200">
 
-                            {/* Header */}
                             <div className="mb-7">
-                                <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-wider">
+                                <div className="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-600 px-3 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-wider">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                     New Account
                                 </div>
-                                <h2 className="text-3xl font-black text-gray-900 mb-1">Create Account</h2>
-                                <p className="text-gray-500 text-sm">Join AirCon IMS to manage your inventory</p>
+                                <h2 className="text-3xl font-black text-base-content mb-1">Create Account</h2>
+                                <p className="text-base-content/60 text-sm">Join AirCon IMS to manage your inventory</p>
                             </div>
 
                             <form onSubmit={handleSignUp} className="space-y-4">
 
                                 {/* Full Name */}
                                 <div>
-                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-2 block">
+                                    <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-2 block">
                                         Full Name
                                     </label>
                                     <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">👤</span>
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-lg">👤</span>
                                         <input
                                             type="text"
-                                            className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all"
+                                            className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-base-300 bg-base-200 text-base-content text-sm font-medium placeholder-base-content/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                                             placeholder="Juan dela Cruz"
                                             value={form.name}
                                             onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
@@ -221,15 +223,15 @@ const SignUp = () => {
 
                                 {/* Email */}
                                 <div>
-                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-2 block">
+                                    <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-2 block">
                                         Email Address
                                     </label>
                                     <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">📧</span>
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-lg">📧</span>
                                         <input
                                             type="email"
-                                            className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all"
-                                            placeholder="your@email.com"
+                                            className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-base-300 bg-base-200 text-base-content text-sm font-medium placeholder-base-content/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                                            placeholder="juan.delacruz@email.com"
                                             value={form.email}
                                             onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
                                             required
@@ -239,31 +241,29 @@ const SignUp = () => {
 
                                 {/* Password */}
                                 <div>
-                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-2 block">
+                                    <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-2 block">
                                         Password
                                     </label>
                                     <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">🔒</span>
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-lg">🔒</span>
                                         <input
                                             type={showPassword ? 'text' : 'password'}
-                                            className="w-full pl-11 pr-12 py-3.5 rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all"
+                                            className="w-full pl-11 pr-12 py-3.5 rounded-2xl border border-base-300 bg-base-200 text-base-content text-sm font-medium placeholder-base-content/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                                             placeholder="Min. 6 characters"
                                             value={form.password}
                                             onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
                                             required
                                         />
                                         <button type="button" onClick={() => setShowPassword(p => !p)}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/40 hover:text-base-content/70 transition-colors">
                                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                                         </button>
                                     </div>
-
-                                    {/* Password strength */}
                                     {form.password && (
                                         <div className="mt-2 space-y-1">
                                             <div className="flex gap-1">
                                                 {[1, 2, 3, 4].map(i => (
-                                                    <div key={i} className={`h-1 flex-1 rounded-full transition-all ${i <= strength.score ? strength.color : 'bg-gray-200'}`} />
+                                                    <div key={i} className={`h-1 flex-1 rounded-full transition-all ${i <= strength.score ? strength.color : 'bg-base-300'}`} />
                                                 ))}
                                             </div>
                                             <p className={`text-xs font-medium ${strength.score <= 1 ? 'text-red-500' : strength.score === 2 ? 'text-orange-500' : strength.score === 3 ? 'text-yellow-600' : 'text-green-600'}`}>
@@ -275,31 +275,31 @@ const SignUp = () => {
 
                                 {/* Confirm Password */}
                                 <div>
-                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-2 block">
+                                    <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-2 block">
                                         Confirm Password
                                     </label>
                                     <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">🔐</span>
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-lg">🔐</span>
                                         <input
                                             type={showConfirm ? 'text' : 'password'}
-                                            className={`w-full pl-11 pr-12 py-3.5 rounded-2xl border bg-gray-50 text-gray-900 text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent focus:bg-white transition-all
-                        ${form.confirm
+                                            className={`w-full pl-11 pr-12 py-3.5 rounded-2xl border bg-base-200 text-base-content text-sm font-medium placeholder-base-content/30 focus:outline-none focus:ring-2 focus:border-transparent transition-all
+                                            ${form.confirm
                                                     ? passwordMatch
                                                         ? 'border-green-400 focus:ring-green-500'
                                                         : 'border-red-400 focus:ring-red-500'
-                                                    : 'border-gray-200 focus:ring-emerald-500'}`}
+                                                    : 'border-base-300 focus:ring-emerald-500'}`}
                                             placeholder="Re-enter your password"
                                             value={form.confirm}
                                             onChange={e => setForm(p => ({ ...p, confirm: e.target.value }))}
                                             required
                                         />
                                         <button type="button" onClick={() => setShowConfirm(p => !p)}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/40 hover:text-base-content/70 transition-colors">
                                             {showConfirm ? <FaEyeSlash /> : <FaEye />}
                                         </button>
                                         {form.confirm && (
                                             <div className={`absolute right-10 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center
-                        ${passwordMatch ? 'bg-green-500' : 'bg-red-400'}`}>
+                                            ${passwordMatch ? 'bg-green-500' : 'bg-red-400'}`}>
                                                 <span className="text-white text-xs">{passwordMatch ? '✓' : '✗'}</span>
                                             </div>
                                         )}
@@ -329,22 +329,20 @@ const SignUp = () => {
                                 </button>
                             </form>
 
-                            {/* Divider */}
                             <div className="flex items-center gap-3 my-5">
-                                <div className="flex-1 h-px bg-gray-100" />
-                                <span className="text-xs text-gray-400 font-medium">Have an account?</span>
-                                <div className="flex-1 h-px bg-gray-100" />
+                                <div className="flex-1 h-px bg-base-200" />
+                                <span className="text-xs text-base-content/40 font-medium">Have an account?</span>
+                                <div className="flex-1 h-px bg-base-200" />
                             </div>
 
-                            {/* Login link */}
                             <Link to="/login"
-                                className="w-full py-3.5 rounded-2xl border-2 border-gray-200 text-gray-700 font-bold text-sm flex items-center justify-center gap-2 hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
+                                className="w-full py-3.5 rounded-2xl border-2 border-base-300 text-base-content/70 font-bold text-sm flex items-center justify-center gap-2 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-500/5 transition-all">
                                 👋 Sign In Instead
                             </Link>
                         </div>
                     )}
 
-                    <p className="text-center text-xs text-gray-400 mt-6">
+                    <p className="text-center text-xs text-base-content/30 mt-6">
                         Protected by Supabase Authentication · Secured with JWT
                     </p>
                 </div>

@@ -48,7 +48,7 @@ const Users = () => {
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h1 className="text-2xl font-bold">User Management</h1>
-                    <p className="text-gray-500 text-sm">Manage staff and admin accounts</p>
+                    <p className="text-base-content/60 text-sm">Manage staff and admin accounts</p>
                 </div>
             </div>
 
@@ -59,20 +59,20 @@ const Users = () => {
                     { label: 'Admins', value: admins.length, sub: 'full access', icon: MdAdminPanelSettings },
                     { label: 'Staff', value: staffs.length, sub: 'limited access', icon: MdPerson },
                 ].map(({ label, value, sub, icon: Icon }) => (
-                    <div key={label} className="border border-gray-200 rounded-xl p-5 bg-white">
+                    <div key={label} className="border border-base-200 rounded-xl p-5 bg-base-100">
                         <div className="flex items-center justify-between mb-2">
-                            <p className="text-sm text-gray-500">{label}</p>
+                            <p className="text-sm text-base-content/60">{label}</p>
                             <Icon className="text-xl text-gray-300" />
                         </div>
                         <p className="text-2xl font-bold text-black">{value}</p>
-                        <p className="text-xs text-gray-400 mt-1">{sub}</p>
+                        <p className="text-xs text-base-content/40 mt-1">{sub}</p>
                     </div>
                 ))}
             </div>
 
             {/* Users Table */}
-            <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-                <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
+            <div className="border border-base-200 rounded-xl bg-base-100 overflow-hidden">
+                <div className="px-5 py-4 border-b border-base-200 bg-base-200">
                     <p className="font-semibold text-sm flex items-center gap-2">
                         <MdPeople className="text-base" /> All Users
                     </p>
@@ -80,36 +80,36 @@ const Users = () => {
 
                 <div className="overflow-x-auto">
                     <table className="table table-sm w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead className="bg-base-200 border-b border-base-200">
                             <tr>
-                                <th className="text-xs font-bold text-gray-500 uppercase">User</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Email</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Role</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Joined</th>
-                                <th className="text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">User</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Email</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Role</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Joined</th>
+                                <th className="text-xs font-bold text-base-content/60 uppercase">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={5} className="text-center py-8 text-gray-400">Loading...</td></tr>
+                                <tr><td colSpan={5} className="text-center py-8 text-base-content/40">Loading...</td></tr>
                             ) : users.map(user => (
-                                <tr key={user.id} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
+                                <tr key={user.id} className="hover:bg-base-200 border-b border-base-200 last:border-0">
                                     <td>
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                                <FaUser className="text-gray-500 text-xs" />
+                                            <div className="w-8 h-8 rounded-full bg-base-300 flex items-center justify-center">
+                                                <FaUser className="text-base-content/60 text-xs" />
                                             </div>
                                             <div>
                                                 <p className="font-semibold text-sm">
                                                     {user.name || 'No name'}
                                                     {user.id === currentUser?.id && (
-                                                        <span className="ml-2 text-xs text-gray-400">(you)</span>
+                                                        <span className="ml-2 text-xs text-base-content/40">(you)</span>
                                                     )}
                                                 </p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="text-sm text-gray-600">{user.email}</td>
+                                    <td className="text-sm text-base-content/70">{user.email}</td>
                                     <td>
                                         {editUser === user.id ? (
                                             <div className="flex gap-1">
@@ -122,7 +122,7 @@ const Users = () => {
                                                 <button
                                                     onClick={() => handleRoleChange(user.id, 'staff')}
                                                     disabled={saving}
-                                                    className="btn btn-xs btn-ghost rounded-full gap-1 border border-gray-200">
+                                                    className="btn btn-xs btn-ghost rounded-full gap-1 border border-base-200">
                                                     <MdPerson className="text-xs" /> Staff
                                                 </button>
                                                 <button
@@ -145,7 +145,7 @@ const Users = () => {
                                             </span>
                                         )}
                                     </td>
-                                    <td className="text-xs text-gray-400">
+                                    <td className="text-xs text-base-content/40">
                                         {new Date(user.created_at).toLocaleDateString()}
                                     </td>
                                     <td>
@@ -163,25 +163,25 @@ const Users = () => {
                     </table>
                 </div>
 
-                <div className="px-4 py-3 border-t border-gray-100 text-xs text-gray-400">
+                <div className="px-4 py-3 border-t border-base-200 text-xs text-base-content/40">
                     {users.length} total users
                 </div>
             </div>
 
             {/* Role Permissions Info */}
             <div className="grid grid-cols-2 gap-4 mt-4">
-                <div className="border border-gray-200 rounded-xl p-5 bg-white">
+                <div className="border border-base-200 rounded-xl p-5 bg-base-100">
                     <p className="font-semibold text-sm mb-3 flex items-center gap-2">
                         <MdAdminPanelSettings /> Admin Permissions
                     </p>
                     {['View inventory', 'Add / Edit / Delete items', 'Stock In & Stock Out', 'Manage users & roles', 'View dashboard'].map(p => (
                         <div key={p} className="flex items-center gap-2 py-1">
                             <MdCheck className="text-green-500 flex-shrink-0" />
-                            <span className="text-sm text-gray-600">{p}</span>
+                            <span className="text-sm text-base-content/70">{p}</span>
                         </div>
                     ))}
                 </div>
-                <div className="border border-gray-200 rounded-xl p-5 bg-white">
+                <div className="border border-base-200 rounded-xl p-5 bg-base-100">
                     <p className="font-semibold text-sm mb-3 flex items-center gap-2">
                         <MdPerson /> Staff Permissions
                     </p>
@@ -194,7 +194,7 @@ const Users = () => {
                     ].map(({ label, allowed }) => (
                         <div key={label} className="flex items-center gap-2 py-1">
                             <MdCheck className={`flex-shrink-0 ${allowed ? 'text-green-500' : 'text-gray-200'}`} />
-                            <span className={`text-sm ${allowed ? 'text-gray-600' : 'text-gray-300'}`}>{label}</span>
+                            <span className={`text-sm ${allowed ? 'text-base-content/70' : 'text-gray-300'}`}>{label}</span>
                         </div>
                     ))}
                 </div>

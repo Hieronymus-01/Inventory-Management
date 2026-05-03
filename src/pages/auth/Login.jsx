@@ -98,7 +98,7 @@ const Login = () => {
             </div>
 
             {/* ── RIGHT PANEL ── */}
-            <div className="flex-1 flex items-center justify-center bg-gray-50 px-6 py-12">
+            <div className="flex-1 flex items-center justify-center bg-base-200 px-6 py-12">
                 <div className="w-full max-w-md">
 
                     {/* Mobile logo */}
@@ -109,12 +109,12 @@ const Login = () => {
                         </div>
                         <div>
                             <p className="font-black text-gray-900 text-lg leading-none">AirCon IMS</p>
-                            <p className="text-gray-400 text-xs">Inventory Management System</p>
+                            <p className="text-base-content/40 text-xs">Inventory Management System</p>
                         </div>
                     </div>
 
                     {/* Card */}
-                    <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+                    <div className="bg-base-100 rounded-3xl shadow-xl p-8 border border-base-200">
 
                         {/* Header */}
                         <div className="mb-8">
@@ -123,22 +123,22 @@ const Login = () => {
                                 Secure Login
                             </div>
                             <h2 className="text-3xl font-black text-gray-900 mb-1">Welcome!</h2>
-                            <p className="text-gray-500 text-sm">Sign in to manage your aircon inventory</p>
+                            <p className="text-base-content/60 text-sm">Sign in to manage your aircon inventory</p>
                         </div>
 
                         <form onSubmit={handleLogin} className="space-y-5">
 
                             {/* Email */}
                             <div>
-                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-2 block">
+                                <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-2 block">
                                     Email Address
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">📧</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-lg">📧</span>
                                     <input
                                         type="email"
-                                        className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
-                                        placeholder="your@email.com"
+                                        className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-base-200 bg-base-200 text-gray-900 text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-base-100 transition-all"
+                                        placeholder="JUAN.DELACRUZ@email.com"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
                                         required
@@ -149,7 +149,7 @@ const Login = () => {
                             {/* Password */}
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                    <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider">
                                         Password
                                     </label>
                                     <a href="#" className="text-xs text-blue-500 hover:text-blue-700 font-medium">
@@ -157,10 +157,10 @@ const Login = () => {
                                     </a>
                                 </div>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">🔒</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-lg">🔒</span>
                                     <input
                                         type={showPassword ? 'text' : 'password'}
-                                        className="w-full pl-11 pr-12 py-3.5 rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
+                                        className="w-full pl-11 pr-12 py-3.5 rounded-2xl border border-base-200 bg-base-200 text-gray-900 text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-base-100 transition-all"
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
@@ -169,7 +169,7 @@ const Login = () => {
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(p => !p)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/40 hover:text-base-content/70 transition-colors"
                                     >
                                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                                     </button>
@@ -199,20 +199,20 @@ const Login = () => {
 
                         {/* Divider */}
                         <div className="flex items-center gap-3 my-6">
-                            <div className="flex-1 h-px bg-gray-100" />
-                            <span className="text-xs text-gray-400 font-medium">New here?</span>
-                            <div className="flex-1 h-px bg-gray-100" />
+                            <div className="flex-1 h-px bg-base-200" />
+                            <span className="text-xs text-base-content/40 font-medium">New here?</span>
+                            <div className="flex-1 h-px bg-base-200" />
                         </div>
 
                         {/* Sign Up Link */}
                         <Link to="/signup"
-                            className="w-full py-3.5 rounded-2xl border-2 border-gray-200 text-gray-700 font-bold text-sm flex items-center justify-center gap-2 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 transition-all">
+                            className="w-full py-3.5 rounded-2xl border-2 border-base-200 text-base-content/80 font-bold text-sm flex items-center justify-center gap-2 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 transition-all">
                             ✨ Create New Account
                         </Link>
                     </div>
 
                     {/* Footer note */}
-                    <p className="text-center text-xs text-gray-400 mt-6">
+                    <p className="text-center text-xs text-base-content/40 mt-6">
                         Protected by Supabase Authentication · Secured with JWT
                     </p>
                 </div>

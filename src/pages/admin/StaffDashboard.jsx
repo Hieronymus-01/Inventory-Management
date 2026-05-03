@@ -109,7 +109,7 @@ const StaffDashboard = () => {
             {/* Header */}
             <div className="mb-6">
                 <h1 className="text-2xl font-bold">Staff Dashboard</h1>
-                <p className="text-gray-500 text-sm">
+                <p className="text-base-content/60 text-sm">
                     Welcome, <span className="font-semibold text-black">{profile?.name}</span> •{' '}
                     {new Date().toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </p>
@@ -125,41 +125,41 @@ const StaffDashboard = () => {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-4 gap-4 mb-6">
-                <div className="border border-gray-200 rounded-xl p-5 bg-white">
-                    <p className="text-sm text-gray-500 mb-1 flex items-center gap-1"><MdInventory className="text-gray-300" /> Total Items</p>
+                <div className="border border-base-200 rounded-xl p-5 bg-base-100">
+                    <p className="text-sm text-base-content/60 mb-1 flex items-center gap-1"><MdInventory className="text-gray-300" /> Total Items</p>
                     <p className="text-2xl font-bold">{totalItems}</p>
-                    <p className="text-xs text-gray-400 mt-1">in inventory</p>
+                    <p className="text-xs text-base-content/40 mt-1">in inventory</p>
                 </div>
-                <div className="border border-gray-200 rounded-xl p-5 bg-white">
-                    <p className="text-sm text-gray-500 mb-1 flex items-center gap-1"><MdWarning className={lowStock > 0 ? 'text-orange-400' : 'text-gray-300'} /> Low Stock</p>
+                <div className="border border-base-200 rounded-xl p-5 bg-base-100">
+                    <p className="text-sm text-base-content/60 mb-1 flex items-center gap-1"><MdWarning className={lowStock > 0 ? 'text-orange-400' : 'text-gray-300'} /> Low Stock</p>
                     <p className={`text-2xl font-bold ${lowStock > 0 ? 'text-orange-500' : 'text-black'}`}>{lowStock}</p>
-                    <p className="text-xs text-gray-400 mt-1">need reorder</p>
+                    <p className="text-xs text-base-content/40 mt-1">need reorder</p>
                 </div>
-                <div className="border border-gray-200 rounded-xl p-5 bg-white">
-                    <p className="text-sm text-gray-500 mb-1 flex items-center gap-1"><MdTrendingUp className="text-green-400" /> Today In</p>
+                <div className="border border-base-200 rounded-xl p-5 bg-base-100">
+                    <p className="text-sm text-base-content/60 mb-1 flex items-center gap-1"><MdTrendingUp className="text-green-400" /> Today In</p>
                     <p className="text-2xl font-bold text-green-600">+{todayIn}</p>
-                    <p className="text-xs text-gray-400 mt-1">your stock ins</p>
+                    <p className="text-xs text-base-content/40 mt-1">your stock ins</p>
                 </div>
-                <div className="border border-gray-200 rounded-xl p-5 bg-white">
-                    <p className="text-sm text-gray-500 mb-1 flex items-center gap-1"><MdTrendingDown className="text-red-400" /> Today Out</p>
+                <div className="border border-base-200 rounded-xl p-5 bg-base-100">
+                    <p className="text-sm text-base-content/60 mb-1 flex items-center gap-1"><MdTrendingDown className="text-red-400" /> Today Out</p>
                     <p className="text-2xl font-bold text-red-500">-{todayOut}</p>
-                    <p className="text-xs text-gray-400 mt-1">your stock outs</p>
+                    <p className="text-xs text-base-content/40 mt-1">your stock outs</p>
                 </div>
             </div>
 
             {/* Barcode Scanner — Main Feature for Staff */}
             <div className="mb-6">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Quick Scan to Update Stock</p>
+                <p className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-2">Quick Scan to Update Stock</p>
                 <BarcodeScanner onScan={handleScan} label="Scan Item to Stock In / Out" />
             </div>
 
             {/* Stock Modal inline */}
             {stockModal && (
-                <div className="mb-6 border-2 border-black rounded-xl bg-white p-5">
+                <div className="mb-6 border-2 border-black rounded-xl bg-base-100 p-5">
                     <div className="flex items-start justify-between mb-4">
                         <div>
                             <p className="font-bold text-lg">{stockModal.item_name}</p>
-                            <p className="text-xs text-gray-400 font-mono">{stockModal.barcode}</p>
+                            <p className="text-xs text-base-content/40 font-mono">{stockModal.barcode}</p>
                             <p className="text-sm mt-1">
                                 Current Stock: <span className={`font-bold ${stockModal.quantity === 0 ? 'text-red-500' : 'text-black'}`}>
                                     {stockModal.quantity} {stockModal.unit}
@@ -170,11 +170,11 @@ const StaffDashboard = () => {
                     </div>
 
                     {/* Type Toggle */}
-                    <div className="flex rounded-full bg-gray-100 p-1 mb-4">
+                    <div className="flex rounded-full bg-base-200 p-1 mb-4">
                         {['stock_in', 'stock_out'].map(t => (
                             <button key={t} onClick={() => setType(t)}
                                 className={`flex-1 py-2 text-sm font-medium rounded-full transition-colors flex items-center justify-center gap-2
-                  ${type === t ? 'bg-white shadow text-black' : 'text-gray-500'}`}>
+                  ${type === t ? 'bg-base-100 shadow text-black' : 'text-base-content/60'}`}>
                                 {t === 'stock_in' ? <MdTrendingUp className="text-green-500" /> : <MdTrendingDown className="text-red-500" />}
                                 {t === 'stock_in' ? 'Stock In' : 'Stock Out'}
                             </button>
@@ -183,12 +183,12 @@ const StaffDashboard = () => {
 
                     <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Quantity</label>
+                            <label className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1 block">Quantity</label>
                             <input type="number" min="1" className="input input-bordered w-full text-xl font-bold text-center"
                                 value={qty} onChange={e => setQty(parseInt(e.target.value) || 0)} />
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Notes</label>
+                            <label className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1 block">Notes</label>
                             <input type="text" className="input input-bordered w-full"
                                 value={notes} onChange={e => setNotes(e.target.value)}
                                 placeholder="e.g. Job #001, Supplier delivery" />
@@ -211,24 +211,24 @@ const StaffDashboard = () => {
 
             <div className="grid grid-cols-2 gap-4">
                 {/* My Recent Activity */}
-                <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-                    <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
+                <div className="border border-base-200 rounded-xl bg-base-100 overflow-hidden">
+                    <div className="px-5 py-4 border-b border-base-200 bg-base-200">
                         <p className="font-semibold text-sm flex items-center gap-2">
                             <MdHistory /> My Recent Activity
                         </p>
-                        <p className="text-xs text-gray-400">Your last 10 transactions</p>
+                        <p className="text-xs text-base-content/40">Your last 10 transactions</p>
                     </div>
                     <div className="overflow-y-auto max-h-64">
                         {loading ? (
-                            <p className="text-center py-6 text-gray-400 text-sm">Loading...</p>
+                            <p className="text-center py-6 text-base-content/40 text-sm">Loading...</p>
                         ) : myTransactions.length === 0 ? (
-                            <p className="text-center py-6 text-gray-400 text-sm">No transactions yet</p>
+                            <p className="text-center py-6 text-base-content/40 text-sm">No transactions yet</p>
                         ) : myTransactions.map(tx => (
-                            <div key={tx.id} className="flex items-center justify-between px-5 py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50">
+                            <div key={tx.id} className="flex items-center justify-between px-5 py-3 border-b border-gray-50 last:border-0 hover:bg-base-200">
                                 <div>
                                     <p className="text-sm font-medium">{tx.inventory_items?.item_name}</p>
-                                    <p className="text-xs text-gray-400">{new Date(tx.created_at).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
-                                    {tx.notes && <p className="text-xs text-gray-400 italic">{tx.notes}</p>}
+                                    <p className="text-xs text-base-content/40">{new Date(tx.created_at).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                                    {tx.notes && <p className="text-xs text-base-content/40 italic">{tx.notes}</p>}
                                 </div>
                                 <span className={`badge badge-sm font-bold ${tx.type === 'stock_in' ? 'badge-success' : 'badge-error'}`}>
                                     {tx.type === 'stock_in' ? `+${tx.quantity}` : `-${tx.quantity}`}
@@ -239,32 +239,32 @@ const StaffDashboard = () => {
                 </div>
 
                 {/* Low Stock Alerts */}
-                <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-                    <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
+                <div className="border border-base-200 rounded-xl bg-base-100 overflow-hidden">
+                    <div className="px-5 py-4 border-b border-base-200 bg-base-200">
                         <p className="font-semibold text-sm flex items-center gap-2">
                             <MdWarning className="text-orange-400" /> Low Stock Alerts
                         </p>
-                        <p className="text-xs text-gray-400">Items that need attention</p>
+                        <p className="text-xs text-base-content/40">Items that need attention</p>
                     </div>
                     <div>
                         {loading ? (
-                            <p className="text-center py-6 text-gray-400 text-sm">Loading...</p>
+                            <p className="text-center py-6 text-base-content/40 text-sm">Loading...</p>
                         ) : lowItems.length === 0 ? (
                             <div className="flex flex-col items-center py-8 gap-2">
                                 <MdCheckCircle className="text-green-400 text-3xl" />
-                                <p className="text-sm text-gray-400">All items are sufficiently stocked!</p>
+                                <p className="text-sm text-base-content/40">All items are sufficiently stocked!</p>
                             </div>
                         ) : lowItems.map(item => (
-                            <div key={item.id} className="flex items-center justify-between px-5 py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50">
+                            <div key={item.id} className="flex items-center justify-between px-5 py-3 border-b border-gray-50 last:border-0 hover:bg-base-200">
                                 <div>
                                     <p className="text-sm font-medium">{item.item_name}</p>
-                                    <p className="text-xs text-gray-400">{item.category} • {item.location || 'No location'}</p>
+                                    <p className="text-xs text-base-content/40">{item.category} • {item.location || 'No location'}</p>
                                 </div>
                                 <div className="text-right">
                                     <p className={`text-sm font-bold ${item.quantity === 0 ? 'text-red-500' : 'text-orange-500'}`}>
                                         {item.quantity} {item.unit}
                                     </p>
-                                    <p className="text-xs text-gray-400">min: {item.reorder_level}</p>
+                                    <p className="text-xs text-base-content/40">min: {item.reorder_level}</p>
                                 </div>
                             </div>
                         ))}

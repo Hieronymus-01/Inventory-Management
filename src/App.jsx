@@ -9,6 +9,7 @@ import Inventory from './pages/admin/Inventory'
 import Users from './pages/admin/Users'
 import AuditLogs from './pages/admin/AuditLogs'
 import EditProfile from './pages/admin/EditProfile'
+import Reports from './pages/admin/Reports'
 
 const ProtectedRoute = ({ children }) => {
   const { session, loading } = useContext(SessionContext)
@@ -49,6 +50,7 @@ function App() {
       <Route path="/profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
       <Route path="/users" element={<AdminRoute><Users /></AdminRoute>} />
       <Route path="/audit-logs" element={<AdminRoute><AuditLogs /></AdminRoute>} />
+      <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )
