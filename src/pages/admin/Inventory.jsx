@@ -28,8 +28,8 @@ const StockStatus = ({ quantity, reorderLevel }) => {
     return <span className="text-xs font-bold text-green-600">IN STOCK</span>
 }
 
-// ── Add/Edit Item Modal ───────────────────────────────────────
-const ItemModal = ({ item, onClose, onSave, scannedBarcode }) => {
+// ── Add/Edit Item Modal (Admin Only) ──────────────────────────
+const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
     const [form, setForm] = useState({
         barcode: item?.barcode || scannedBarcode || '',
         item_name: item?.item_name || '',
@@ -51,11 +51,33 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode }) => {
             return
         }
         setSaving(true)
-        const { error } = item
-            ? await supabase.from('inventory_items').update({ ...form, updated_at: new Date().toISOString() }).eq('id', item.id)
-            : await supabase.from('inventory_items').insert(form)
-        if (error) alert(error.message)
-        else onSave()
+        if (item) {
+            const { error } = await supabase.from('inventory_items')
+                .update({ ...form, updated_at: new Date().toISOString() }).eq('id', item.id)
+            if (!error) {
+                await supabase.from('audit_logs').insert({
+                    performed_by: profile?.id,
+                    action: 'update',
+                    description: `updated item "${form.item_name}"`,
+                    table_name: 'inventory_items',
+                    record_id: item.id,
+                })
+            }
+            if (error) { alert(error.message); setSaving(false); return }
+        } else {
+            const { data, error } = await supabase.from('inventory_items').insert(form).select().single()
+            if (!error && data) {
+                await supabase.from('audit_logs').insert({
+                    performed_by: profile?.id,
+                    action: 'create',
+                    description: `added new item "${form.item_name}"`,
+                    table_name: 'inventory_items',
+                    record_id: data.id,
+                })
+            }
+            if (error) { alert(error.message); setSaving(false); return }
+        }
+        onSave()
         setSaving(false)
     }
 
@@ -72,20 +94,13 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode }) => {
 
                 <div className="px-6 py-5 space-y-4">
                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">
-                            Barcode / Item Code *
-                        </label>
+                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Barcode / Item Code *</label>
                         <div className="flex gap-2">
-                            <input
-                                type="text"
-                                className="input input-bordered w-full font-mono"
+                            <input type="text" className="input input-bordered w-full font-mono"
                                 value={form.barcode}
                                 onChange={e => setForm(p => ({ ...p, barcode: e.target.value }))}
-                                placeholder="Scan or type barcode"
-                            />
-                            <div className="btn btn-neutral btn-square">
-                                <FaBarcode className="text-lg" />
-                            </div>
+                                placeholder="Scan or type barcode" />
+                            <div className="btn btn-neutral btn-square"><FaBarcode className="text-lg" /></div>
                         </div>
                     </div>
 
@@ -100,8 +115,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode }) => {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Category</label>
-                            <select className="select select-bordered w-full"
-                                value={form.category}
+                            <select className="select select-bordered w-full" value={form.category}
                                 onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
                                 {['AC Unit', 'Parts', 'Supplies', 'Tools', 'Equipment'].map(c =>
                                     <option key={c} value={c}>{c}</option>)}
@@ -109,8 +123,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode }) => {
                         </div>
                         <div>
                             <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Unit</label>
-                            <select className="select select-bordered w-full"
-                                value={form.unit}
+                            <select className="select select-bordered w-full" value={form.unit}
                                 onChange={e => setForm(p => ({ ...p, unit: e.target.value }))}>
                                 {['pcs', 'unit', 'set', 'meter', 'roll', 'tank', 'box', 'liter'].map(u =>
                                     <option key={u} value={u}>{u}</option>)}
@@ -121,15 +134,13 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode }) => {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Brand</label>
-                            <input type="text" className="input input-bordered w-full"
-                                value={form.brand}
+                            <input type="text" className="input input-bordered w-full" value={form.brand}
                                 onChange={e => setForm(p => ({ ...p, brand: e.target.value }))}
                                 placeholder="e.g. Carrier, Daikin" />
                         </div>
                         <div>
                             <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Model</label>
-                            <input type="text" className="input input-bordered w-full"
-                                value={form.model}
+                            <input type="text" className="input input-bordered w-full" value={form.model}
                                 onChange={e => setForm(p => ({ ...p, model: e.target.value }))}
                                 placeholder="e.g. XPower 1HP" />
                         </div>
@@ -158,8 +169,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode }) => {
 
                     <div>
                         <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Storage Location</label>
-                        <input type="text" className="input input-bordered w-full"
-                            value={form.location}
+                        <input type="text" className="input input-bordered w-full" value={form.location}
                             onChange={e => setForm(p => ({ ...p, location: e.target.value }))}
                             placeholder="e.g. Warehouse A, Shelf B1" />
                     </div>
@@ -169,7 +179,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode }) => {
                         <textarea className="textarea textarea-bordered w-full" rows={2}
                             value={form.description}
                             onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
-                            placeholder="Optional notes about this item" />
+                            placeholder="Optional notes" />
                     </div>
                 </div>
 
@@ -206,6 +216,15 @@ const StockModal = ({ item, onClose, onSave, profile }) => {
             .update({ quantity: newQty, updated_at: new Date().toISOString() })
             .eq('id', item.id)
 
+        // Audit log
+        await supabase.from('audit_logs').insert({
+            performed_by: profile?.id,
+            action: type,
+            description: `${type === 'stock_in' ? 'stocked in' : 'stocked out'} ${qty} x ${item.item_name}`,
+            table_name: 'inventory_items',
+            record_id: item.id,
+        })
+
         if (txError || updateError) alert(txError?.message || updateError?.message)
         else onSave()
         setSaving(false)
@@ -218,7 +237,6 @@ const StockModal = ({ item, onClose, onSave, profile }) => {
                     <h2 className="text-lg font-bold">Stock Update</h2>
                     <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle"><MdClose /></button>
                 </div>
-
                 <div className="px-6 py-5 space-y-4">
                     <div className="bg-gray-50 rounded-xl p-4">
                         <p className="font-bold text-sm">{item.item_name}</p>
@@ -240,8 +258,7 @@ const StockModal = ({ item, onClose, onSave, profile }) => {
                     <div>
                         <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Quantity</label>
                         <input type="number" min="1" className="input input-bordered w-full text-xl font-bold text-center"
-                            value={qty}
-                            onChange={e => setQty(parseInt(e.target.value) || 0)} />
+                            value={qty} onChange={e => setQty(parseInt(e.target.value) || 0)} />
                     </div>
 
                     <div className={`rounded-xl p-3 text-sm font-medium text-center
@@ -252,14 +269,12 @@ const StockModal = ({ item, onClose, onSave, profile }) => {
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Notes (Optional)</label>
-                        <input type="text" className="input input-bordered w-full"
-                            value={notes}
+                        <label className="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Notes</label>
+                        <input type="text" className="input input-bordered w-full" value={notes}
                             onChange={e => setNotes(e.target.value)}
                             placeholder="e.g. Received from supplier, Used for Job #001" />
                     </div>
                 </div>
-
                 <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
                     <button onClick={onClose} className="btn btn-ghost rounded-full">Cancel</button>
                     <button onClick={handleSave} disabled={saving}
@@ -275,6 +290,8 @@ const StockModal = ({ item, onClose, onSave, profile }) => {
 // ── Main Inventory Page ───────────────────────────────────────
 const Inventory = () => {
     const { profile } = useContext(SessionContext)
+    const isAdmin = profile?.role === 'admin'
+
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState('')
@@ -289,10 +306,7 @@ const Inventory = () => {
     const fetchItems = async () => {
         setLoading(true)
         const { data } = await supabase
-            .from('inventory_items')
-            .select('*')
-            .eq('is_active', true)
-            .order('item_name')
+            .from('inventory_items').select('*').eq('is_active', true).order('item_name')
         if (data) setItems(data)
         setLoading(false)
     }
@@ -322,16 +336,25 @@ const Inventory = () => {
         if (found) {
             setStockItem(found)
             setShowStockModal(true)
-        } else {
+        } else if (isAdmin) {
             setScannedBarcode(barcode)
             setEditItem(null)
             setShowAddModal(true)
+        } else {
+            alert(`No item found with barcode: ${barcode}\nPlease ask admin to add this item.`)
         }
     }
 
-    const handleDelete = async (id) => {
-        if (!confirm('Deactivate this item?')) return
-        await supabase.from('inventory_items').update({ is_active: false }).eq('id', id)
+    const handleDelete = async (item) => {
+        if (!confirm(`Deactivate "${item.item_name}"?`)) return
+        await supabase.from('inventory_items').update({ is_active: false }).eq('id', item.id)
+        await supabase.from('audit_logs').insert({
+            performed_by: profile?.id,
+            action: 'delete',
+            description: `deactivated item "${item.item_name}"`,
+            table_name: 'inventory_items',
+            record_id: item.id,
+        })
         fetchItems()
     }
 
@@ -342,11 +365,13 @@ const Inventory = () => {
                     <h1 className="text-2xl font-bold">Inventory</h1>
                     <p className="text-gray-500 text-sm">AC units, parts, supplies, tools & equipment</p>
                 </div>
-                <button
-                    onClick={() => { setEditItem(null); setScannedBarcode(''); setShowAddModal(true) }}
-                    className="btn btn-neutral rounded-full gap-2">
-                    <MdAdd /> Add Item
-                </button>
+                {isAdmin && (
+                    <button
+                        onClick={() => { setEditItem(null); setScannedBarcode(''); setShowAddModal(true) }}
+                        className="btn btn-neutral rounded-full gap-2">
+                        <MdAdd /> Add Item
+                    </button>
+                )}
             </div>
 
             {/* Barcode Scanner */}
@@ -376,13 +401,9 @@ const Inventory = () => {
             <div className="flex gap-3 mb-4 flex-wrap">
                 <div className="relative flex-1 min-w-48">
                     <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                        type="text"
-                        className="input input-bordered input-sm w-full pl-9"
+                    <input type="text" className="input input-bordered input-sm w-full pl-9"
                         placeholder="Search items, barcodes, brands..."
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                    />
+                        value={search} onChange={e => setSearch(e.target.value)} />
                 </div>
                 <select className="select select-bordered select-sm"
                     value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
@@ -425,8 +446,7 @@ const Inventory = () => {
                                 <tr key={item.id} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
                                     <td>
                                         <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded flex items-center gap-1">
-                                            <FaBarcode className="text-gray-400 text-xs" />
-                                            {item.barcode}
+                                            <FaBarcode className="text-gray-400 text-xs" />{item.barcode}
                                         </span>
                                     </td>
                                     <td>
@@ -449,21 +469,27 @@ const Inventory = () => {
                                     <td className="text-xs text-gray-500">{item.location || '—'}</td>
                                     <td>
                                         <div className="flex gap-1">
+                                            {/* Stock In/Out — available to ALL */}
                                             <button
                                                 onClick={() => { setStockItem(item); setShowStockModal(true) }}
                                                 className="btn btn-xs btn-ghost rounded-full tooltip" data-tip="Stock In/Out">
                                                 <MdTrendingUp className="text-green-500" />
                                             </button>
-                                            <button
-                                                onClick={() => { setEditItem(item); setShowAddModal(true) }}
-                                                className="btn btn-xs btn-ghost rounded-full tooltip" data-tip="Edit">
-                                                <MdEdit className="text-blue-500" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(item.id)}
-                                                className="btn btn-xs btn-ghost rounded-full tooltip" data-tip="Remove">
-                                                <MdDelete className="text-red-500" />
-                                            </button>
+                                            {/* Edit & Delete — Admin only */}
+                                            {isAdmin && (
+                                                <>
+                                                    <button
+                                                        onClick={() => { setEditItem(item); setShowAddModal(true) }}
+                                                        className="btn btn-xs btn-ghost rounded-full tooltip" data-tip="Edit">
+                                                        <MdEdit className="text-blue-500" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(item)}
+                                                        className="btn btn-xs btn-ghost rounded-full tooltip" data-tip="Remove">
+                                                        <MdDelete className="text-red-500" />
+                                                    </button>
+                                                </>
+                                            )}
                                         </div>
                                     </td>
                                 </tr>
@@ -473,13 +499,15 @@ const Inventory = () => {
                 </div>
                 <div className="px-4 py-3 border-t border-gray-100 text-xs text-gray-400">
                     Showing {filtered.length} of {totalItems} items
+                    {!isAdmin && <span className="ml-2 text-orange-400">• Staff view: edit/delete disabled</span>}
                 </div>
             </div>
 
-            {showAddModal && (
+            {showAddModal && isAdmin && (
                 <ItemModal
                     item={editItem}
                     scannedBarcode={scannedBarcode}
+                    profile={profile}
                     onClose={() => { setShowAddModal(false); setEditItem(null); setScannedBarcode('') }}
                     onSave={() => { setShowAddModal(false); setEditItem(null); setScannedBarcode(''); fetchItems() }}
                 />
