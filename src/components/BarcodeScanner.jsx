@@ -60,10 +60,21 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
     }
 
     const stopCamera = () => {
+        // Stop zxing reader
         if (readerRef.current) {
-            readerRef.current.reset()
+            try {
+                readerRef.current.reset()
+            } catch (e) { }
             readerRef.current = null
         }
+
+        // Force stop all video tracks — this actually turns the camera off
+        if (videoRef.current && videoRef.current.srcObject) {
+            const tracks = videoRef.current.srcObject.getTracks()
+            tracks.forEach(track => track.stop())
+            videoRef.current.srcObject = null
+        }
+
         setScanning(false)
         setLastScanned('')
     }
@@ -107,14 +118,14 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
                     <button
                         onClick={() => switchMode('keyboard')}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all
-              ${mode === 'keyboard' ? 'bg-black text-white shadow' : 'text-base-content/60 hover:text-black'}`}>
+                            ${mode === 'keyboard' ? 'bg-black text-white shadow' : 'text-base-content/60 hover:text-black'}`}>
                         <FaKeyboard className="text-xs" />
                         <span className="hidden sm:inline">Physical</span>
                     </button>
                     <button
                         onClick={() => switchMode('camera')}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all
-              ${mode === 'camera' ? 'bg-black text-white shadow' : 'text-base-content/60 hover:text-black'}`}>
+                            ${mode === 'camera' ? 'bg-black text-white shadow' : 'text-base-content/60 hover:text-black'}`}>
                         <FaCamera className="text-xs" />
                         <span className="hidden sm:inline">Camera</span>
                     </button>
@@ -206,9 +217,9 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
                             )}
                             {!scanning && (
                                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gray-900">
-                                    <FaCamera className="text-base-content/60 text-4xl" />
-                                    <p className="text-base-content/60 text-sm">Camera is off</p>
-                                    <p className="text-base-content/70 text-xs">Click Start Scanning to activate</p>
+                                    <FaCamera className="text-gray-400 text-4xl" />
+                                    <p className="text-gray-400 text-sm">Camera is off</p>
+                                    <p className="text-gray-500 text-xs">Click Start Scanning to activate</p>
                                 </div>
                             )}
                         </div>
@@ -240,11 +251,11 @@ const BarcodeScanner = ({ onScan, label = "Barcode / QR Scanner" }) => {
             </div>
 
             <style>{`
-        @keyframes scanline {
-          0%, 100% { transform: translateY(-24px); opacity: 0.3; }
-          50% { transform: translateY(24px); opacity: 1; }
-        }
-      `}</style>
+                @keyframes scanline {
+                    0%, 100% { transform: translateY(-24px); opacity: 0.3; }
+                    50% { transform: translateY(24px); opacity: 1; }
+                }
+            `}</style>
         </div>
     )
 }
