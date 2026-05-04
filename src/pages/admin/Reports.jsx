@@ -9,14 +9,22 @@ import {
     MdClose, MdPerson
 } from 'react-icons/md'
 import { FaRobot, FaUser, FaBoxOpen } from 'react-icons/fa'
+import { useToast } from '../../contexts/ToastContext'
+import {
+    exportInventoryCSV,
+    exportTransactionsCSV,
+    exportLowStockCSV,
+    exportFullReportCSV
+} from '../../utils/exportData'
+import { MdDownload, MdFileDownload } from 'react-icons/md'
 
 // ─── Period Selector ─────────────────────────────────────────────────────────
 const PeriodBtn = ({ label, active, onClick }) => (
     <button
         onClick={onClick}
         className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${active
-                ? 'bg-black text-white shadow'
-                : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-400'
+            ? 'bg-black text-white shadow'
+            : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-400'
             }`}
     >
         {label}
@@ -94,16 +102,16 @@ const ChatBubble = ({ message }) => {
         <div className={`flex gap-3 ${isAI ? '' : 'flex-row-reverse'}`}>
             {/* Avatar */}
             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isAI
-                    ? 'bg-black text-white'
-                    : 'bg-gray-200 text-gray-600'
+                ? 'bg-black text-white'
+                : 'bg-gray-200 text-gray-600'
                 }`}>
                 {isAI ? <FaRobot className="text-sm" /> : <FaUser className="text-sm" />}
             </div>
 
             {/* Bubble */}
             <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${isAI
-                    ? 'bg-white border border-gray-200 text-gray-800 rounded-tl-none shadow-sm'
-                    : 'bg-black text-white rounded-tr-none'
+                ? 'bg-white border border-gray-200 text-gray-800 rounded-tl-none shadow-sm'
+                : 'bg-black text-white rounded-tr-none'
                 }`}>
                 {message.loading ? (
                     <div className="flex items-center gap-2 text-gray-400">
@@ -138,6 +146,7 @@ const Reports = () => {
     const [transactions, setTransactions] = useState([])
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
+    const toast = useToast()
 
     // AI Chat state
     const [messages, setMessages] = useState([
@@ -386,12 +395,62 @@ Format numbers clearly. If asked about something not in the data, say you don't 
                         Stock movement, inventory insights, and AI-powered analysis
                     </p>
                 </div>
-                <button onClick={fetchData} disabled={refreshing}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-base-100 border border-base-200 text-base-content/60 text-sm font-medium hover:bg-base-200 transition-all shadow-sm">
-                    <MdRefresh className={`text-lg ${refreshing ? 'animate-spin' : ''}`} />
-                    {refreshing ? 'Loading...' : 'Refresh'}
-                </button>
+                <div className="flex gap-2">
+
+                    {/* Export Dropdown */}
+                    <div className="dropdown dropdown-end">
+                        <button tabIndex={0}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-base-100 border border-base-200 text-base-content/60 text-sm font-medium hover:bg-base-200 transition-all shadow-sm">
+                            <MdDownload className="text-lg" /> Export
+                        </button>
+                        <ul tabIndex={0}
+                            className="dropdown-content menu bg-base-100 rounded-2xl shadow-xl border border-base-200 w-56 p-2 z-50 mt-2">
+                            <li className="menu-title text-xs text-base-content/40 px-3 py-1">Download Reports</li>
+                            <li>
+                                <button onClick={() => {
+                                    exportInventoryCSV(items)
+                                    toast.success('Downloaded!', 'Inventory report saved as CSV.')
+                                }} className="flex items-center gap-2 text-sm">
+                                    <MdFileDownload className="text-blue-500" /> Inventory Report
+                                </button>
+                            </li>
+                            <li>
+                                <button onClick={() => {
+                                    exportTransactionsCSV(transactions)
+                                    toast.success('Downloaded!', 'Transactions report saved as CSV.')
+                                }} className="flex items-center gap-2 text-sm">
+                                    <MdFileDownload className="text-green-500" /> Transactions ({periodLabel})
+                                </button>
+                            </li>
+                            <li>
+                                <button onClick={() => {
+                                    exportLowStockCSV(items)
+                                    toast.warning('Downloaded!', 'Low stock alert report saved.')
+                                }} className="flex items-center gap-2 text-sm">
+                                    <MdFileDownload className="text-orange-500" /> Low Stock Alert
+                                </button>
+                            </li>
+                            <li>
+                                <button onClick={() => {
+                                    exportFullReportCSV(items, transactions)
+                                    toast.success('Downloaded!', 'Full inventory report saved as CSV.')
+                                }} className="flex items-center gap-2 text-sm">
+                                    <MdFileDownload className="text-purple-500" /> Full Report
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Refresh Button (same as before) */}
+                    <button onClick={fetchData} disabled={refreshing}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-base-100 border border-base-200 text-base-content/60 text-sm font-medium hover:bg-base-200 transition-all shadow-sm">
+                        <MdRefresh className={`text-lg ${refreshing ? 'animate-spin' : ''}`} />
+                        {refreshing ? 'Loading...' : 'Refresh'}
+                    </button>
+                </div>
             </div>
+
+
 
             {/* ── PERIOD SELECTOR ── */}
             <div className="flex items-center gap-2 mb-6 flex-wrap">

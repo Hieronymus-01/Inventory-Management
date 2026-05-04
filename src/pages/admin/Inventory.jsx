@@ -8,6 +8,9 @@ import {
     MdInventory, MdWarning, MdTrendingUp, MdTrendingDown, MdClose
 } from 'react-icons/md'
 import { FaBarcode } from 'react-icons/fa'
+import { useToast } from '../../contexts/ToastContext'
+import { exportInventoryCSV, exportTransactionsCSV, exportLowStockCSV } from '../../utils/exportData'
+import { MdDownload, MdFileDownload } from 'react-icons/md'
 
 // ── Category Badge ────────────────────────────────────────────
 const CategoryBadge = ({ category }) => {
@@ -29,7 +32,7 @@ const StockStatus = ({ quantity, reorderLevel }) => {
 }
 
 // ── Add/Edit Item Modal (Admin Only) ──────────────────────────
-const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
+const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile, toast }) => {
     const [form, setForm] = useState({
         barcode: item?.barcode || scannedBarcode || '',
         item_name: item?.item_name || '',
@@ -47,40 +50,24 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
 
     const handleSave = async () => {
         if (!form.barcode || !form.item_name) {
-            alert('Barcode and Item Name are required.')
+            toast.error('Missing Fields', 'Barcode and Item Name are required.')
             return
         }
         setSaving(true)
-        if (item) {
-            const { error } = await supabase.from('inventory_items')
-                .update({ ...form, updated_at: new Date().toISOString() }).eq('id', item.id)
-            if (!error) {
-                await supabase.from('audit_logs').insert({
-                    performed_by: profile?.id,
-                    action: 'update',
-                    description: `updated item "${form.item_name}"`,
-                    table_name: 'inventory_items',
-                    record_id: item.id,
-                })
-            }
-            if (error) { alert(error.message); setSaving(false); return }
+        const { error } = item
+            ? await supabase.from('inventory_items').update({ ...form, updated_at: new Date().toISOString() }).eq('id', item.id)
+            : await supabase.from('inventory_items').insert(form)
+        if (error) {
+            toast.error('Save Failed', error.message)
         } else {
-            const { data, error } = await supabase.from('inventory_items').insert(form).select().single()
-            if (!error && data) {
-                await supabase.from('audit_logs').insert({
-                    performed_by: profile?.id,
-                    action: 'create',
-                    description: `added new item "${form.item_name}"`,
-                    table_name: 'inventory_items',
-                    record_id: data.id,
-                })
-            }
-            if (error) { alert(error.message); setSaving(false); return }
+            toast.success(
+                item ? 'Item Updated!' : 'Item Added!',
+                item ? `${form.item_name} has been updated.` : `${form.item_name} added to inventory.`
+            )
+            onSave()
         }
-        onSave()
         setSaving(false)
     }
-
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
             <div className="bg-base-100 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -195,38 +182,38 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile }) => {
 }
 
 // ── Stock In/Out Modal ────────────────────────────────────────
-const StockModal = ({ item, onClose, onSave, profile }) => {
+const StockModal = ({ item, onClose, onSave, profile, toast }) => {
     const [type, setType] = useState('stock_in')
     const [qty, setQty] = useState(1)
     const [notes, setNotes] = useState('')
     const [saving, setSaving] = useState(false)
 
     const handleSave = async () => {
-        if (!qty || qty <= 0) { alert('Enter a valid quantity.'); return }
+        if (!qty || qty <= 0) {
+            toast.error('Invalid Quantity', 'Please enter a valid quantity greater than 0.')
+            return
+        }
         setSaving(true)
         const newQty = type === 'stock_in'
             ? item.quantity + qty
             : Math.max(0, item.quantity - qty)
 
         const { error: txError } = await supabase.from('stock_transactions').insert({
-            item_id: item.id, type, quantity: qty,
-            notes, performed_by: profile?.id,
+            item_id: item.id, type, quantity: qty, notes, performed_by: profile?.id,
         })
         const { error: updateError } = await supabase.from('inventory_items')
             .update({ quantity: newQty, updated_at: new Date().toISOString() })
             .eq('id', item.id)
 
-        // Audit log
-        await supabase.from('audit_logs').insert({
-            performed_by: profile?.id,
-            action: type,
-            description: `${type === 'stock_in' ? 'stocked in' : 'stocked out'} ${qty} x ${item.item_name}`,
-            table_name: 'inventory_items',
-            record_id: item.id,
-        })
-
-        if (txError || updateError) alert(txError?.message || updateError?.message)
-        else onSave()
+        if (txError || updateError) {
+            toast.error('Update Failed', txError?.message || updateError?.message)
+        } else {
+            toast.success(
+                type === 'stock_in' ? 'Stock Added!' : 'Stock Removed!',
+                `${item.item_name}: ${type === 'stock_in' ? '+' : '-'}${qty} units. New qty: ${newQty}`
+            )
+            onSave()
+        }
         setSaving(false)
     }
 
@@ -302,6 +289,7 @@ const Inventory = () => {
     const [editItem, setEditItem] = useState(null)
     const [stockItem, setStockItem] = useState(null)
     const [scannedBarcode, setScannedBarcode] = useState('')
+    const toast = useToast()
 
     const fetchItems = async () => {
         setLoading(true)
@@ -345,33 +333,60 @@ const Inventory = () => {
         }
     }
 
-    const handleDelete = async (item) => {
-        if (!confirm(`Deactivate "${item.item_name}"?`)) return
-        await supabase.from('inventory_items').update({ is_active: false }).eq('id', item.id)
-        await supabase.from('audit_logs').insert({
-            performed_by: profile?.id,
-            action: 'delete',
-            description: `deactivated item "${item.item_name}"`,
-            table_name: 'inventory_items',
-            record_id: item.id,
-        })
+    const handleDelete = async (id) => {
+        if (!confirm('Deactivate this item?')) return
+        const item = items.find(i => i.id === id)
+        await supabase.from('inventory_items').update({ is_active: false }).eq('id', id)
+        toast.warning('Item Deactivated', `${item?.item_name} has been removed from active inventory.`)
         fetchItems()
     }
 
     return (
         <AdminLayout>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
                 <div>
                     <h1 className="text-2xl font-bold">Inventory</h1>
                     <p className="text-base-content/60 text-sm">AC units, parts, supplies, tools & equipment</p>
                 </div>
-                {isAdmin && (
-                    <button
-                        onClick={() => { setEditItem(null); setScannedBarcode(''); setShowAddModal(true) }}
-                        className="btn btn-neutral rounded-full gap-2">
-                        <MdAdd /> Add Item
-                    </button>
-                )}
+
+                <div className="flex gap-2 flex-wrap">
+                    {/* Export dropdown */}
+                    <div className="dropdown dropdown-end">
+                        <button tabIndex={0} className="btn btn-ghost btn-sm rounded-full gap-2 border border-base-300">
+                            <MdDownload /> Export
+                        </button>
+                        <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-2xl shadow-xl border border-base-200 w-52 p-2 z-50 mt-2">
+                            <li className="menu-title text-xs text-base-content/40 px-3 py-1">Download as CSV</li>
+
+                            <li>
+                                <button onClick={() => {
+                                    exportInventoryCSV(items)
+                                    toast.success('Downloaded!', 'Inventory exported as CSV.')
+                                }} className="flex items-center gap-2 text-sm">
+                                    <MdFileDownload className="text-green-500" /> Full Inventory
+                                </button>
+                            </li>
+
+                            <li>
+                                <button onClick={() => {
+                                    exportLowStockCSV(items)
+                                    toast.warning('Downloaded!', 'Low stock report exported as CSV.')
+                                }} className="flex items-center gap-2 text-sm">
+                                    <MdFileDownload className="text-orange-500" /> Low Stock Report
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Add button (keep admin check) */}
+                    {isAdmin && (
+                        <button
+                            onClick={() => { setEditItem(null); setScannedBarcode(''); setShowAddModal(true) }}
+                            className="btn btn-neutral rounded-full gap-2">
+                            <MdAdd /> Add Item
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Barcode Scanner */}
@@ -484,7 +499,7 @@ const Inventory = () => {
                                                         <MdEdit className="text-blue-500" />
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDelete(item)}
+                                                        onClick={() => handleDelete(item.id)}
                                                         className="btn btn-xs btn-ghost rounded-full tooltip" data-tip="Remove">
                                                         <MdDelete className="text-red-500" />
                                                     </button>
@@ -508,6 +523,7 @@ const Inventory = () => {
                     item={editItem}
                     scannedBarcode={scannedBarcode}
                     profile={profile}
+                    toast={toast}
                     onClose={() => { setShowAddModal(false); setEditItem(null); setScannedBarcode('') }}
                     onSave={() => { setShowAddModal(false); setEditItem(null); setScannedBarcode(''); fetchItems() }}
                 />
@@ -516,6 +532,7 @@ const Inventory = () => {
                 <StockModal
                     item={stockItem}
                     profile={profile}
+                    toast={toast}
                     onClose={() => { setShowStockModal(false); setStockItem(null) }}
                     onSave={() => { setShowStockModal(false); setStockItem(null); fetchItems() }}
                 />
