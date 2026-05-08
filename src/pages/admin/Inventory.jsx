@@ -5,12 +5,12 @@ import { SessionContext } from '../../contexts/SessionContext'
 import BarcodeScanner from '../../components/BarcodeScanner'
 import {
     MdAdd, MdSearch, MdEdit, MdDelete,
-    MdInventory, MdWarning, MdTrendingUp, MdTrendingDown, MdClose
+    MdInventory, MdWarning, MdTrendingUp, MdTrendingDown, MdClose,
+    MdDownload, MdFileDownload
 } from 'react-icons/md'
 import { FaBarcode } from 'react-icons/fa'
 import { useToast } from '../../contexts/ToastContext'
 import { exportInventoryCSV, exportTransactionsCSV, exportLowStockCSV } from '../../utils/exportData'
-import { MdDownload, MdFileDownload } from 'react-icons/md'
 
 // ── Category Badge ────────────────────────────────────────────
 const CategoryBadge = ({ category }) => {
@@ -26,12 +26,12 @@ const CategoryBadge = ({ category }) => {
 
 // ── Stock Status ──────────────────────────────────────────────
 const StockStatus = ({ quantity, reorderLevel }) => {
-    if (quantity === 0) return <span className="text-xs font-bold text-red-500">OUT OF STOCK</span>
-    if (quantity <= reorderLevel) return <span className="text-xs font-bold text-orange-500">LOW STOCK</span>
-    return <span className="text-xs font-bold text-green-600">IN STOCK</span>
+    if (quantity === 0) return <span className="text-xs font-bold text-red-500">OUT</span>
+    if (quantity <= reorderLevel) return <span className="text-xs font-bold text-orange-500">LOW</span>
+    return <span className="text-xs font-bold text-green-600">OK</span>
 }
 
-// ── Add/Edit Item Modal (Admin Only) ──────────────────────────
+// ── Add/Edit Item Modal ───────────────────────────────────────
 const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile, toast }) => {
     const [form, setForm] = useState({
         barcode: item?.barcode || scannedBarcode || '',
@@ -68,22 +68,25 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile, toast }) =>
         }
         setSaving(false)
     }
+
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-            <div className="bg-base-100 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-base-200 sticky top-0 bg-base-100">
-                    <h2 className="text-lg font-bold flex items-center gap-2">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 px-0 sm:px-4">
+            <div className="bg-base-100 rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-y-auto">
+                {/* Header */}
+                <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-base-200 sticky top-0 bg-base-100 z-10">
+                    <h2 className="text-base sm:text-lg font-bold flex items-center gap-2">
                         <MdInventory className="text-black" />
                         {item ? 'Edit Item' : 'Add New Item'}
                     </h2>
                     <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle"><MdClose /></button>
                 </div>
 
-                <div className="px-6 py-5 space-y-4">
+                <div className="px-5 sm:px-6 py-4 sm:py-5 space-y-4">
+                    {/* Barcode */}
                     <div>
                         <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Barcode / Item Code *</label>
                         <div className="flex gap-2">
-                            <input type="text" className="input input-bordered w-full font-mono"
+                            <input type="text" className="input input-bordered w-full font-mono text-sm"
                                 value={form.barcode}
                                 onChange={e => setForm(p => ({ ...p, barcode: e.target.value }))}
                                 placeholder="Scan or type barcode" />
@@ -91,18 +94,20 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile, toast }) =>
                         </div>
                     </div>
 
+                    {/* Item Name */}
                     <div>
                         <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Item Name *</label>
-                        <input type="text" className="input input-bordered w-full"
+                        <input type="text" className="input input-bordered w-full text-sm"
                             value={form.item_name}
                             onChange={e => setForm(p => ({ ...p, item_name: e.target.value }))}
                             placeholder="e.g. Split Type Aircon 1HP" />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* Category + Unit */}
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Category</label>
-                            <select className="select select-bordered w-full" value={form.category}
+                            <select className="select select-bordered w-full text-sm" value={form.category}
                                 onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
                                 {['AC Unit', 'Parts', 'Supplies', 'Tools', 'Equipment'].map(c =>
                                     <option key={c} value={c}>{c}</option>)}
@@ -110,7 +115,7 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile, toast }) =>
                         </div>
                         <div>
                             <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Unit</label>
-                            <select className="select select-bordered w-full" value={form.unit}
+                            <select className="select select-bordered w-full text-sm" value={form.unit}
                                 onChange={e => setForm(p => ({ ...p, unit: e.target.value }))}>
                                 {['pcs', 'unit', 'set', 'meter', 'roll', 'tank', 'box', 'liter'].map(u =>
                                     <option key={u} value={u}>{u}</option>)}
@@ -118,61 +123,65 @@ const ItemModal = ({ item, onClose, onSave, scannedBarcode, profile, toast }) =>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* Brand + Model */}
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Brand</label>
-                            <input type="text" className="input input-bordered w-full" value={form.brand}
+                            <input type="text" className="input input-bordered w-full text-sm" value={form.brand}
                                 onChange={e => setForm(p => ({ ...p, brand: e.target.value }))}
                                 placeholder="e.g. Carrier, Daikin" />
                         </div>
                         <div>
                             <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Model</label>
-                            <input type="text" className="input input-bordered w-full" value={form.model}
+                            <input type="text" className="input input-bordered w-full text-sm" value={form.model}
                                 onChange={e => setForm(p => ({ ...p, model: e.target.value }))}
                                 placeholder="e.g. XPower 1HP" />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4">
+                    {/* Qty + Reorder + Price */}
+                    <div className="grid grid-cols-3 gap-2 sm:gap-4">
                         <div>
-                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Quantity</label>
-                            <input type="number" min="0" className="input input-bordered w-full"
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Qty</label>
+                            <input type="number" min="0" className="input input-bordered w-full text-sm"
                                 value={form.quantity}
                                 onChange={e => setForm(p => ({ ...p, quantity: parseInt(e.target.value) || 0 }))} />
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Reorder Level</label>
-                            <input type="number" min="0" className="input input-bordered w-full"
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Reorder</label>
+                            <input type="number" min="0" className="input input-bordered w-full text-sm"
                                 value={form.reorder_level}
                                 onChange={e => setForm(p => ({ ...p, reorder_level: parseInt(e.target.value) || 0 }))} />
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Unit Price (₱)</label>
-                            <input type="number" min="0" step="0.01" className="input input-bordered w-full"
+                            <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Price (₱)</label>
+                            <input type="number" min="0" step="0.01" className="input input-bordered w-full text-sm"
                                 value={form.unit_price}
                                 onChange={e => setForm(p => ({ ...p, unit_price: parseFloat(e.target.value) || 0 }))} />
                         </div>
                     </div>
 
+                    {/* Location */}
                     <div>
                         <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Storage Location</label>
-                        <input type="text" className="input input-bordered w-full" value={form.location}
+                        <input type="text" className="input input-bordered w-full text-sm" value={form.location}
                             onChange={e => setForm(p => ({ ...p, location: e.target.value }))}
                             placeholder="e.g. Warehouse A, Shelf B1" />
                     </div>
 
+                    {/* Description */}
                     <div>
                         <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Description</label>
-                        <textarea className="textarea textarea-bordered w-full" rows={2}
+                        <textarea className="textarea textarea-bordered w-full text-sm" rows={2}
                             value={form.description}
                             onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
                             placeholder="Optional notes" />
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-3 px-6 py-4 border-t border-base-200 bg-base-200 rounded-b-2xl">
-                    <button onClick={onClose} className="btn btn-ghost rounded-full">Cancel</button>
-                    <button onClick={handleSave} disabled={saving} className="btn btn-neutral rounded-full">
+                <div className="flex justify-end gap-3 px-5 sm:px-6 py-4 border-t border-base-200 bg-base-200 rounded-b-2xl sticky bottom-0">
+                    <button onClick={onClose} className="btn btn-ghost rounded-full btn-sm sm:btn-md">Cancel</button>
+                    <button onClick={handleSave} disabled={saving} className="btn btn-neutral rounded-full btn-sm sm:btn-md">
                         {saving ? 'Saving...' : item ? 'Save Changes' : 'Add Item'}
                     </button>
                 </div>
@@ -218,38 +227,46 @@ const StockModal = ({ item, onClose, onSave, profile, toast }) => {
     }
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-            <div className="bg-base-100 rounded-2xl shadow-2xl w-full max-w-md">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-base-200">
-                    <h2 className="text-lg font-bold">Stock Update</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 px-0 sm:px-4">
+            <div className="bg-base-100 rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md">
+                <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-base-200">
+                    <h2 className="text-base sm:text-lg font-bold">Stock Update</h2>
                     <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle"><MdClose /></button>
                 </div>
-                <div className="px-6 py-5 space-y-4">
-                    <div className="bg-base-200 rounded-xl p-4">
+                <div className="px-5 sm:px-6 py-4 sm:py-5 space-y-4">
+                    <div className="bg-base-200 rounded-xl p-3 sm:p-4">
                         <p className="font-bold text-sm">{item.item_name}</p>
                         <p className="text-xs text-base-content/40 font-mono">{item.barcode}</p>
-                        <p className="text-sm mt-1">Current Stock: <span className="font-bold">{item.quantity} {item.unit}</span></p>
+                        <p className="text-sm mt-1">
+                            Current Stock: <span className="font-bold">{item.quantity} {item.unit}</span>
+                        </p>
                     </div>
 
                     <div className="flex rounded-full bg-base-200 p-1">
                         {['stock_in', 'stock_out'].map(t => (
                             <button key={t} onClick={() => setType(t)}
-                                className={`flex-1 py-2 text-sm font-medium rounded-full transition-colors flex items-center justify-center gap-2
-                  ${type === t ? 'bg-base-100 shadow text-black' : 'text-base-content/60'}`}>
-                                {t === 'stock_in' ? <MdTrendingUp className="text-green-500" /> : <MdTrendingDown className="text-red-500" />}
-                                {t === 'stock_in' ? 'Stock In' : 'Stock Out'}
+                                className={`flex-1 py-2 text-sm font-medium rounded-full transition-colors flex items-center justify-center gap-1 sm:gap-2
+                                    ${type === t ? 'bg-base-100 shadow text-black' : 'text-base-content/60'}`}>
+                                {t === 'stock_in'
+                                    ? <MdTrendingUp className="text-green-500" />
+                                    : <MdTrendingDown className="text-red-500" />}
+                                <span>{t === 'stock_in' ? 'Stock In' : 'Stock Out'}</span>
                             </button>
                         ))}
                     </div>
 
                     <div>
                         <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Quantity</label>
-                        <input type="number" min="1" className="input input-bordered w-full text-xl font-bold text-center"
-                            value={qty} onChange={e => setQty(parseInt(e.target.value) || 0)} />
+                        <input
+                            type="number" min="1"
+                            className="input input-bordered w-full text-xl font-bold text-center"
+                            value={qty}
+                            onChange={e => setQty(parseInt(e.target.value) || 0)}
+                        />
                     </div>
 
                     <div className={`rounded-xl p-3 text-sm font-medium text-center
-            ${type === 'stock_in' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                        ${type === 'stock_in' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                         {type === 'stock_in'
                             ? `After: ${item.quantity + qty} ${item.unit} (+${qty})`
                             : `After: ${Math.max(0, item.quantity - qty)} ${item.unit} (-${qty})`}
@@ -257,15 +274,17 @@ const StockModal = ({ item, onClose, onSave, profile, toast }) => {
 
                     <div>
                         <label className="text-xs font-bold text-base-content/60 mb-1 block uppercase tracking-wider">Notes</label>
-                        <input type="text" className="input input-bordered w-full" value={notes}
+                        <input type="text" className="input input-bordered w-full text-sm" value={notes}
                             onChange={e => setNotes(e.target.value)}
                             placeholder="e.g. Received from supplier, Used for Job #001" />
                     </div>
                 </div>
-                <div className="flex justify-end gap-3 px-6 py-4 border-t border-base-200 bg-base-200 rounded-b-2xl">
-                    <button onClick={onClose} className="btn btn-ghost rounded-full">Cancel</button>
+                <div className="flex justify-end gap-3 px-5 sm:px-6 py-4 border-t border-base-200 bg-base-200 rounded-b-2xl">
+                    <button onClick={onClose} className="btn btn-ghost rounded-full btn-sm sm:btn-md">Cancel</button>
                     <button onClick={handleSave} disabled={saving}
-                        className={`btn rounded-full ${type === 'stock_in' ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-red-500 text-white hover:bg-red-600'}`}>
+                        className={`btn rounded-full btn-sm sm:btn-md ${type === 'stock_in'
+                            ? 'bg-green-600 text-white hover:bg-green-700'
+                            : 'bg-red-500 text-white hover:bg-red-600'}`}>
                         {saving ? 'Updating...' : type === 'stock_in' ? 'Stock In' : 'Stock Out'}
                     </button>
                 </div>
@@ -273,6 +292,63 @@ const StockModal = ({ item, onClose, onSave, profile, toast }) => {
         </div>
     )
 }
+
+// ── Mobile Item Card (shown on small screens instead of table) ──
+const ItemCard = ({ item, isAdmin, onStock, onEdit, onDelete }) => (
+    <div className={`bg-base-100 rounded-xl border p-4 space-y-2
+        ${item.quantity === 0 ? 'border-red-200' : item.quantity <= item.reorder_level ? 'border-orange-200' : 'border-base-200'}`}>
+        <div className="flex items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm truncate">{item.item_name}</p>
+                <p className="text-xs text-base-content/40 font-mono flex items-center gap-1 mt-0.5">
+                    <FaBarcode className="text-xs" /> {item.barcode}
+                </p>
+            </div>
+            <StockStatus quantity={item.quantity} reorderLevel={item.reorder_level} />
+        </div>
+
+        <div className="flex flex-wrap gap-2 items-center">
+            <CategoryBadge category={item.category} />
+            {item.brand && <span className="text-xs text-base-content/50">{item.brand} {item.model}</span>}
+        </div>
+
+        <div className="flex items-center justify-between">
+            <div>
+                <span className={`text-lg font-black ${item.quantity === 0
+                    ? 'text-red-500'
+                    : item.quantity <= item.reorder_level
+                        ? 'text-orange-500'
+                        : 'text-base-content'}`}>
+                    {item.quantity}
+                </span>
+                <span className="text-xs text-base-content/40 ml-1">{item.unit}</span>
+                <p className="text-xs text-base-content/40">₱{Number(item.unit_price).toLocaleString()}/unit</p>
+            </div>
+            <div className="flex gap-1">
+                <button
+                    onClick={() => onStock(item)}
+                    className="btn btn-xs btn-ghost rounded-full gap-1 text-green-600 hover:bg-green-50">
+                    <MdTrendingUp /> Stock
+                </button>
+                {isAdmin && (
+                    <>
+                        <button onClick={() => onEdit(item)}
+                            className="btn btn-xs btn-ghost rounded-full text-blue-500 hover:bg-blue-50">
+                            <MdEdit />
+                        </button>
+                        <button onClick={() => onDelete(item.id)}
+                            className="btn btn-xs btn-ghost rounded-full text-red-500 hover:bg-red-50">
+                            <MdDelete />
+                        </button>
+                    </>
+                )}
+            </div>
+        </div>
+        {item.location && (
+            <p className="text-xs text-base-content/40">📍 {item.location}</p>
+        )}
+    </div>
+)
 
 // ── Main Inventory Page ───────────────────────────────────────
 const Inventory = () => {
@@ -343,21 +419,22 @@ const Inventory = () => {
 
     return (
         <AdminLayout>
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+
+            {/* ── Page Header ── */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 sm:mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold">Inventory</h1>
-                    <p className="text-base-content/60 text-sm">AC units, parts, supplies, tools & equipment</p>
+                    <h1 className="text-xl sm:text-2xl font-bold">Inventory</h1>
+                    <p className="text-base-content/60 text-xs sm:text-sm">AC units, parts, supplies, tools & equipment</p>
                 </div>
 
                 <div className="flex gap-2 flex-wrap">
                     {/* Export dropdown */}
                     <div className="dropdown dropdown-end">
-                        <button tabIndex={0} className="btn btn-ghost btn-sm rounded-full gap-2 border border-base-300">
+                        <button tabIndex={0} className="btn btn-neutral btn-sm rounded-full gap-1.5 btn-outline">
                             <MdDownload /> Export
                         </button>
                         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-2xl shadow-xl border border-base-200 w-52 p-2 z-50 mt-2">
                             <li className="menu-title text-xs text-base-content/40 px-3 py-1">Download as CSV</li>
-
                             <li>
                                 <button onClick={() => {
                                     exportInventoryCSV(items)
@@ -366,7 +443,6 @@ const Inventory = () => {
                                     <MdFileDownload className="text-green-500" /> Full Inventory
                                 </button>
                             </li>
-
                             <li>
                                 <button onClick={() => {
                                     exportLowStockCSV(items)
@@ -378,65 +454,106 @@ const Inventory = () => {
                         </ul>
                     </div>
 
-                    {/* Add button (keep admin check) */}
                     {isAdmin && (
                         <button
                             onClick={() => { setEditItem(null); setScannedBarcode(''); setShowAddModal(true) }}
-                            className="btn btn-neutral rounded-full gap-2">
+                            className="btn btn-neutral btn-sm rounded-full gap-1.5">
                             <MdAdd /> Add Item
                         </button>
                     )}
                 </div>
             </div>
 
-            {/* Barcode Scanner */}
-            <div className="mb-6">
+            {/* ── Barcode Scanner ── */}
+            <div className="mb-4 sm:mb-6">
                 <BarcodeScanner onScan={handleScan} label="Barcode / QR Scanner" />
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-4 gap-4 mb-6">
+            {/* ── Stats — 2 cols mobile, 4 cols desktop ── */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
                 {[
-                    { label: 'Total Items', value: totalItems, sub: 'active items', color: 'text-black' },
+                    { label: 'Total Items', value: totalItems, sub: 'active items', color: 'text-base-content' },
                     { label: 'Low Stock', value: lowStock, sub: 'need reorder', color: 'text-orange-500', warn: lowStock > 0 },
                     { label: 'Out of Stock', value: outOfStock, sub: 'unavailable', color: 'text-red-500', warn: outOfStock > 0 },
-                    { label: 'Total Value', value: `₱${totalValue.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`, sub: 'inventory worth', color: 'text-black' },
+                    {
+                        label: 'Total Value',
+                        value: `₱${totalValue >= 1000000
+                            ? (totalValue / 1000000).toFixed(1) + 'M'
+                            : totalValue >= 1000
+                                ? (totalValue / 1000).toFixed(0) + 'K'
+                                : totalValue.toLocaleString('en-PH', { minimumFractionDigits: 0 })}`,
+                        sub: 'inventory worth',
+                        color: 'text-base-content'
+                    },
                 ].map(({ label, value, sub, color, warn }) => (
-                    <div key={label} className="border border-base-200 rounded-xl p-5 bg-base-100">
-                        <p className="text-sm text-base-content/60 mb-1 flex items-center gap-1">
-                            {warn && <MdWarning className="text-orange-400" />} {label}
+                    <div key={label} className="border border-base-200 rounded-xl p-3 sm:p-5 bg-base-100">
+                        <p className="text-xs text-base-content/60 mb-1 flex items-center gap-1">
+                            {warn && <MdWarning className="text-orange-400 flex-shrink-0" />}
+                            <span className="truncate">{label}</span>
                         </p>
-                        <p className={`text-2xl font-bold ${color}`}>{value}</p>
-                        <p className="text-xs text-base-content/40 mt-1">{sub}</p>
+                        <p className={`text-xl sm:text-2xl font-bold ${color}`}>{value}</p>
+                        <p className="text-xs text-base-content/40 mt-0.5 sm:mt-1">{sub}</p>
                     </div>
                 ))}
             </div>
 
-            {/* Filters */}
-            <div className="flex gap-3 mb-4 flex-wrap">
-                <div className="relative flex-1 min-w-48">
+            {/* ── Filters ── */}
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4">
+                <div className="relative flex-1">
                     <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
-                    <input type="text" className="input input-bordered input-sm w-full pl-9"
+                    <input
+                        type="text"
+                        className="input input-bordered input-sm w-full pl-9"
                         placeholder="Search items, barcodes, brands..."
-                        value={search} onChange={e => setSearch(e.target.value)} />
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                    />
                 </div>
-                <select className="select select-bordered select-sm"
-                    value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
-                    <option value="All">All Categories</option>
-                    {['AC Unit', 'Parts', 'Supplies', 'Tools', 'Equipment'].map(c =>
-                        <option key={c} value={c}>{c}</option>)}
-                </select>
-                <select className="select select-bordered select-sm"
-                    value={filterStock} onChange={e => setFilterStock(e.target.value)}>
-                    <option value="All">All Stock</option>
-                    <option value="OK">In Stock</option>
-                    <option value="Low">Low Stock</option>
-                    <option value="Out">Out of Stock</option>
-                </select>
+                <div className="flex gap-2">
+                    <select
+                        className="select select-bordered select-sm flex-1 sm:flex-none"
+                        value={filterCategory}
+                        onChange={e => setFilterCategory(e.target.value)}>
+                        <option value="All">All Categories</option>
+                        {['AC Unit', 'Parts', 'Supplies', 'Tools', 'Equipment'].map(c =>
+                            <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <select
+                        className="select select-bordered select-sm flex-1 sm:flex-none"
+                        value={filterStock}
+                        onChange={e => setFilterStock(e.target.value)}>
+                        <option value="All">All Stock</option>
+                        <option value="OK">In Stock</option>
+                        <option value="Low">Low Stock</option>
+                        <option value="Out">Out of Stock</option>
+                    </select>
+                </div>
             </div>
 
-            {/* Table */}
-            <div className="border border-base-200 rounded-xl bg-base-100 overflow-hidden">
+            {/* ── Mobile Card View (visible on small screens) ── */}
+            <div className="md:hidden space-y-3">
+                {loading ? (
+                    <div className="text-center py-10 text-base-content/40 text-sm">Loading...</div>
+                ) : filtered.length === 0 ? (
+                    <div className="text-center py-10 text-base-content/40 text-sm">No items found.</div>
+                ) : filtered.map(item => (
+                    <ItemCard
+                        key={item.id}
+                        item={item}
+                        isAdmin={isAdmin}
+                        onStock={(i) => { setStockItem(i); setShowStockModal(true) }}
+                        onEdit={(i) => { setEditItem(i); setShowAddModal(true) }}
+                        onDelete={handleDelete}
+                    />
+                ))}
+                <div className="text-xs text-base-content/40 pt-1 pb-2">
+                    Showing {filtered.length} of {totalItems} items
+                    {!isAdmin && <span className="ml-2 text-orange-400">· Staff view</span>}
+                </div>
+            </div>
+
+            {/* ── Desktop Table View (hidden on small screens) ── */}
+            <div className="hidden md:block border border-base-200 rounded-xl bg-base-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="table table-sm w-full">
                         <thead className="bg-base-200 border-b border-base-200">
@@ -466,7 +583,9 @@ const Inventory = () => {
                                     </td>
                                     <td>
                                         <p className="font-semibold text-sm">{item.item_name}</p>
-                                        {item.description && <p className="text-xs text-base-content/40 truncate max-w-32">{item.description}</p>}
+                                        {item.description && (
+                                            <p className="text-xs text-base-content/40 truncate max-w-32">{item.description}</p>
+                                        )}
                                     </td>
                                     <td><CategoryBadge category={item.category} /></td>
                                     <td>
@@ -474,33 +593,40 @@ const Inventory = () => {
                                         <p className="text-xs text-base-content/40">{item.model}</p>
                                     </td>
                                     <td>
-                                        <span className={`font-bold text-sm ${item.quantity === 0 ? 'text-red-500' : item.quantity <= item.reorder_level ? 'text-orange-500' : 'text-black'}`}>
+                                        <span className={`font-bold text-sm ${item.quantity === 0
+                                            ? 'text-red-500'
+                                            : item.quantity <= item.reorder_level
+                                                ? 'text-orange-500'
+                                                : 'text-base-content'}`}>
                                             {item.quantity}
                                         </span>
                                         <span className="text-xs text-base-content/40 ml-1">{item.unit}</span>
                                     </td>
-                                    <td><StockStatus quantity={item.quantity} reorderLevel={item.reorder_level} /></td>
+                                    <td>
+                                        <StockStatus quantity={item.quantity} reorderLevel={item.reorder_level} />
+                                    </td>
                                     <td className="text-sm font-medium">₱{Number(item.unit_price).toLocaleString()}</td>
                                     <td className="text-xs text-base-content/60">{item.location || '—'}</td>
                                     <td>
                                         <div className="flex gap-1">
-                                            {/* Stock In/Out — available to ALL */}
                                             <button
                                                 onClick={() => { setStockItem(item); setShowStockModal(true) }}
-                                                className="btn btn-xs btn-ghost rounded-full tooltip" data-tip="Stock In/Out">
+                                                className="btn btn-xs btn-ghost rounded-full tooltip"
+                                                data-tip="Stock In/Out">
                                                 <MdTrendingUp className="text-green-500" />
                                             </button>
-                                            {/* Edit & Delete — Admin only */}
                                             {isAdmin && (
                                                 <>
                                                     <button
                                                         onClick={() => { setEditItem(item); setShowAddModal(true) }}
-                                                        className="btn btn-xs btn-ghost rounded-full tooltip" data-tip="Edit">
+                                                        className="btn btn-xs btn-ghost rounded-full tooltip"
+                                                        data-tip="Edit">
                                                         <MdEdit className="text-blue-500" />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(item.id)}
-                                                        className="btn btn-xs btn-ghost rounded-full tooltip" data-tip="Remove">
+                                                        className="btn btn-xs btn-ghost rounded-full tooltip"
+                                                        data-tip="Remove">
                                                         <MdDelete className="text-red-500" />
                                                     </button>
                                                 </>
@@ -518,6 +644,7 @@ const Inventory = () => {
                 </div>
             </div>
 
+            {/* ── Modals ── */}
             {showAddModal && isAdmin && (
                 <ItemModal
                     item={editItem}

@@ -10,21 +10,20 @@ import {
 import { FaBoxOpen, FaFire } from 'react-icons/fa'
 
 // ── Stat Card ─────────────────────────────────────────────────────────────────
-const StatCard = ({ label, value, sub, icon: Icon, gradient, textColor = 'text-white', alert = false }) => (
-    <div className="relative rounded-2xl p-5 overflow-hidden shadow-sm"
+const StatCard = ({ label, value, sub, icon: Icon, gradient, alert = false }) => (
+    <div className="relative rounded-2xl p-4 sm:p-5 overflow-hidden shadow-sm"
         style={{ background: gradient }}>
-        {/* Background decoration */}
         <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-10 bg-base-100" />
         <div className="absolute -right-2 -bottom-6 w-16 h-16 rounded-full opacity-10 bg-base-100" />
 
         <div className="relative z-10">
-            <div className="flex items-center justify-between mb-3">
-                <p className="text-sm font-medium text-white/80">{label}</p>
-                <div className="w-9 h-9 rounded-xl bg-base-100/20 flex items-center justify-center">
-                    <Icon className="text-white text-lg" />
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+                <p className="text-xs sm:text-sm font-medium text-white/80">{label}</p>
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-base-100/20 flex items-center justify-center flex-shrink-0">
+                    <Icon className="text-white text-base sm:text-lg" />
                 </div>
             </div>
-            <p className="text-3xl font-black text-white mb-1">{value}</p>
+            <p className="text-2xl sm:text-3xl font-black text-white mb-1">{value}</p>
             <p className="text-xs text-white/60 font-medium">{sub}</p>
             {alert && (
                 <div className="mt-2 inline-flex items-center gap-1 bg-base-100/20 px-2 py-0.5 rounded-full">
@@ -39,7 +38,7 @@ const StatCard = ({ label, value, sub, icon: Icon, gradient, textColor = 'text-w
 // ── Mini Bar Chart ────────────────────────────────────────────────────────────
 const MiniBar = ({ label, value, max, color }) => (
     <div className="flex items-center gap-3">
-        <span className="text-xs text-base-content/60 w-20 truncate font-medium">{label}</span>
+        <span className="text-xs text-base-content/60 w-16 sm:w-20 truncate font-medium">{label}</span>
         <div className="flex-1 bg-base-200 rounded-full h-2.5 overflow-hidden">
             <div
                 className="h-2.5 rounded-full transition-all duration-700"
@@ -152,10 +151,10 @@ const AdminDashboard = () => {
         <AdminLayout>
 
             {/* ── HEADER ── */}
-            <div className="flex items-center justify-between mb-7">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 sm:mb-7">
                 <div>
-                    <div className="flex items-center gap-2 mb-1">
-                        <h1 className="text-2xl font-black text-gray-900">Admin Dashboard</h1>
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900">Admin Dashboard</h1>
                         {(lowStock > 0 || outOfStock > 0) && (
                             <span className="flex items-center gap-1 bg-red-100 text-red-600 text-xs font-bold px-2.5 py-1 rounded-full animate-pulse">
                                 <MdWarning className="text-xs" />
@@ -163,22 +162,28 @@ const AdminDashboard = () => {
                             </span>
                         )}
                     </div>
-                    <p className="text-base-content/60 text-sm">
-                        Welcome back, <span className="font-bold text-gray-800">{profile?.name}</span> ·{' '}
+                    <p className="text-base-content/60 text-xs sm:text-sm">
+                        Welcome back, <span className="font-bold text-gray-800">{profile?.name}</span>
+                        {' · '}
                         <span className="text-base-content/40">
-                            {new Date().toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                            {new Date().toLocaleDateString('en-PH', {
+                                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                            })}
                         </span>
                     </p>
                 </div>
-                <button onClick={fetchAll} disabled={refreshing}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-base-100 border border-base-200 text-base-content/70 text-sm font-medium hover:bg-base-200 hover:border-gray-300 transition-all shadow-sm">
+                <button
+                    onClick={fetchAll}
+                    disabled={refreshing}
+                    className="self-start sm:self-auto flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-base-100 border border-base-200 text-base-content/70 text-xs sm:text-sm font-medium hover:bg-base-200 hover:border-gray-300 transition-all shadow-sm"
+                >
                     <MdRefresh className={`text-lg ${refreshing ? 'animate-spin' : ''}`} />
                     {refreshing ? 'Refreshing...' : 'Refresh'}
                 </button>
             </div>
 
-            {/* ── TOP STATS — Gradient Cards ── */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            {/* ── TOP STATS — 2 cols on mobile, 4 on desktop ── */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
                 <StatCard
                     label="Total Items"
                     value={totalItems}
@@ -219,8 +224,8 @@ const AdminDashboard = () => {
                 />
             </div>
 
-            {/* ── SECOND ROW ── */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {/* ── SECOND ROW — 2 cols mobile, 4 desktop ── */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <StatCard
                     label="Total Users"
                     value={users.length}
@@ -244,28 +249,28 @@ const AdminDashboard = () => {
                 />
 
                 {/* Today Activity Card */}
-                <div className="rounded-2xl p-5 bg-base-100 border border-base-200 shadow-sm">
-                    <p className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-4 flex items-center gap-1">
-                        <FaFire className="text-orange-400" /> Today's Activity
+                <div className="rounded-2xl p-4 sm:p-5 bg-base-100 border border-base-200 shadow-sm">
+                    <p className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-3 sm:mb-4 flex items-center gap-1">
+                        <FaFire className="text-orange-400" /> Today
                     </p>
-                    <div className="flex gap-4">
-                        <div className="flex-1 text-center p-3 rounded-xl bg-green-50 border border-green-100">
-                            <p className="text-2xl font-black text-green-600">{todayIn}</p>
-                            <p className="text-xs text-green-500 font-medium mt-0.5">Stock In</p>
+                    <div className="flex gap-2 sm:gap-4">
+                        <div className="flex-1 text-center p-2 sm:p-3 rounded-xl bg-green-50 border border-green-100">
+                            <p className="text-xl sm:text-2xl font-black text-green-600">{todayIn}</p>
+                            <p className="text-xs text-green-500 font-medium mt-0.5">In</p>
                         </div>
-                        <div className="flex-1 text-center p-3 rounded-xl bg-red-50 border border-red-100">
-                            <p className="text-2xl font-black text-red-500">{todayOut}</p>
-                            <p className="text-xs text-red-400 font-medium mt-0.5">Stock Out</p>
+                        <div className="flex-1 text-center p-2 sm:p-3 rounded-xl bg-red-50 border border-red-100">
+                            <p className="text-xl sm:text-2xl font-black text-red-500">{todayOut}</p>
+                            <p className="text-xs text-red-400 font-medium mt-0.5">Out</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* ── CHARTS ROW ── */}
-            <div className="grid grid-cols-3 gap-4 mb-4">
+            {/* ── CHARTS ROW — stacked mobile, side-by-side lg ── */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
 
                 {/* Stock Movement Chart */}
-                <div className="col-span-2 border border-base-200 rounded-2xl p-5 bg-base-100 shadow-sm">
+                <div className="lg:col-span-2 border border-base-200 rounded-2xl p-4 sm:p-5 bg-base-100 shadow-sm">
                     <div className="flex items-center justify-between mb-1">
                         <p className="font-bold text-sm flex items-center gap-2">
                             <span className="w-7 h-7 rounded-lg flex items-center justify-center"
@@ -276,14 +281,14 @@ const AdminDashboard = () => {
                         </p>
                         <span className="text-xs text-base-content/40 bg-base-200 px-2 py-1 rounded-full">Last 7 Days</span>
                     </div>
-                    <p className="text-xs text-base-content/40 mb-5 ml-9">Daily stock in vs stock out quantity</p>
+                    <p className="text-xs text-base-content/40 mb-4 sm:mb-5 ml-9">Daily stock in vs stock out</p>
 
-                    <div className="flex items-end gap-2 h-36 px-2">
+                    <div className="flex items-end gap-1 sm:gap-2 h-32 sm:h-36 px-1 sm:px-2">
                         {movementData.map(({ label, in: inQty, out: outQty }) => (
                             <div key={label} className="flex-1 flex flex-col items-center gap-1">
-                                <div className="flex items-end gap-0.5 h-28 w-full justify-center">
+                                <div className="flex items-end gap-0.5 h-24 sm:h-28 w-full justify-center">
                                     <div
-                                        className="rounded-t-md transition-all duration-700 w-5"
+                                        className="rounded-t-md transition-all duration-700 w-3 sm:w-5"
                                         style={{
                                             height: `${(inQty / maxMovement) * 100}%`,
                                             minHeight: inQty > 0 ? '6px' : '0',
@@ -292,7 +297,7 @@ const AdminDashboard = () => {
                                         title={`Stock In: ${inQty}`}
                                     />
                                     <div
-                                        className="rounded-t-md transition-all duration-700 w-5"
+                                        className="rounded-t-md transition-all duration-700 w-3 sm:w-5"
                                         style={{
                                             height: `${(outQty / maxMovement) * 100}%`,
                                             minHeight: outQty > 0 ? '6px' : '0',
@@ -306,7 +311,7 @@ const AdminDashboard = () => {
                         ))}
                     </div>
 
-                    <div className="flex gap-5 mt-4 pt-3 border-t border-base-200">
+                    <div className="flex gap-4 sm:gap-5 mt-3 sm:mt-4 pt-3 border-t border-base-200">
                         <div className="flex items-center gap-2 text-xs text-base-content/60">
                             <div className="w-3 h-3 rounded-sm" style={{ background: 'linear-gradient(90deg,#34d399,#10b981)' }} />
                             Stock In
@@ -319,7 +324,7 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Category Breakdown */}
-                <div className="border border-base-200 rounded-2xl p-5 bg-base-100 shadow-sm">
+                <div className="border border-base-200 rounded-2xl p-4 sm:p-5 bg-base-100 shadow-sm">
                     <div className="flex items-center gap-2 mb-1">
                         <span className="w-7 h-7 rounded-lg flex items-center justify-center"
                             style={{ background: 'linear-gradient(135deg,#3b82f6,#8b5cf6)' }}>
@@ -327,8 +332,8 @@ const AdminDashboard = () => {
                         </span>
                         <p className="font-bold text-sm">By Category</p>
                     </div>
-                    <p className="text-xs text-base-content/40 mb-5 ml-9">Items count per category</p>
-                    <div className="space-y-4">
+                    <p className="text-xs text-base-content/40 mb-4 sm:mb-5 ml-9">Items per category</p>
+                    <div className="space-y-3 sm:space-y-4">
                         {categoryData.map(({ cat, count }) => (
                             <MiniBar
                                 key={cat}
@@ -341,7 +346,7 @@ const AdminDashboard = () => {
                     </div>
 
                     {/* Category value summary */}
-                    <div className="mt-5 pt-4 border-t border-base-200 space-y-2">
+                    <div className="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-base-200 space-y-2">
                         <p className="text-xs font-bold text-base-content/40 uppercase tracking-wider">Top Value</p>
                         {categoryData
                             .sort((a, b) => b.value - a.value)
@@ -358,12 +363,12 @@ const AdminDashboard = () => {
                 </div>
             </div>
 
-            {/* ── BOTTOM ROW ── */}
-            <div className="grid grid-cols-3 gap-4">
+            {/* ── BOTTOM ROW — stacked mobile, side-by-side lg ── */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
 
                 {/* Audit Logs */}
-                <div className="col-span-2 border border-base-200 rounded-2xl bg-base-100 overflow-hidden shadow-sm">
-                    <div className="px-5 py-4 border-b border-base-200 flex items-center justify-between"
+                <div className="lg:col-span-2 border border-base-200 rounded-2xl bg-base-100 overflow-hidden shadow-sm">
+                    <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-base-200 flex items-center justify-between"
                         style={{ background: 'linear-gradient(135deg,#f8fafc,#f1f5f9)' }}>
                         <p className="font-bold text-sm flex items-center gap-2">
                             <span className="w-6 h-6 rounded-lg bg-gray-800 flex items-center justify-center">
@@ -376,7 +381,7 @@ const AdminDashboard = () => {
                         </span>
                     </div>
 
-                    <div className="overflow-y-auto max-h-72 divide-y divide-gray-50">
+                    <div className="overflow-y-auto max-h-64 sm:max-h-72 divide-y divide-gray-50">
                         {loading ? (
                             <div className="flex items-center justify-center py-10 gap-2 text-base-content/40">
                                 <span className="loading loading-spinner loading-sm" />
@@ -389,7 +394,7 @@ const AdminDashboard = () => {
                             </div>
                         ) : auditLogs.map(log => (
                             <div key={log.id}
-                                className="flex items-start gap-3 px-5 py-3.5 hover:bg-base-200 transition-colors">
+                                className="flex items-start gap-3 px-4 sm:px-5 py-3 sm:py-3.5 hover:bg-base-200 transition-colors">
                                 <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
                                     style={{ background: actionDotColor(log.action) }} />
                                 <div className="flex-1 min-w-0">
@@ -398,9 +403,9 @@ const AdminDashboard = () => {
                                         {' · '}
                                         <span className="text-base-content/60">{log.description}</span>
                                     </p>
-                                    <div className="flex items-center gap-2 mt-1">
+                                    <div className="flex flex-wrap items-center gap-2 mt-1">
                                         <span className={`text-xs px-2 py-0.5 rounded-full font-bold
-                      ${log.profiles?.role === 'admin'
+                                            ${log.profiles?.role === 'admin'
                                                 ? 'bg-black text-white'
                                                 : 'bg-base-200 text-base-content/60'}`}>
                                             {log.profiles?.role || 'unknown'}
@@ -420,7 +425,7 @@ const AdminDashboard = () => {
 
                 {/* User Activity */}
                 <div className="border border-base-200 rounded-2xl bg-base-100 overflow-hidden shadow-sm">
-                    <div className="px-5 py-4 border-b border-base-200"
+                    <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-base-200"
                         style={{ background: 'linear-gradient(135deg,#f8fafc,#f1f5f9)' }}>
                         <p className="font-bold text-sm flex items-center gap-2">
                             <span className="w-6 h-6 rounded-lg flex items-center justify-center"
@@ -432,7 +437,7 @@ const AdminDashboard = () => {
                         <p className="text-xs text-base-content/40 mt-0.5">Transactions per user</p>
                     </div>
 
-                    <div className="p-4 space-y-3">
+                    <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
                         {staffActivity.length === 0 ? (
                             <div className="text-center py-6 text-base-content/40">
                                 <MdPeople className="text-3xl mx-auto mb-2 opacity-30" />
@@ -453,11 +458,11 @@ const AdminDashboard = () => {
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-bold truncate">{u.name || 'Unknown'}</p>
                                     <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold
-                    ${u.role === 'admin' ? 'bg-black text-white' : 'bg-base-200 text-base-content/60'}`}>
+                                        ${u.role === 'admin' ? 'bg-black text-white' : 'bg-base-200 text-base-content/60'}`}>
                                         {u.role}
                                     </span>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-right flex-shrink-0">
                                     <p className="text-sm font-black text-gray-800">{u.txCount}</p>
                                     <p className="text-xs text-base-content/40">moves</p>
                                 </div>
@@ -467,7 +472,7 @@ const AdminDashboard = () => {
 
                     {/* Alert box */}
                     {(lowStock > 0 || outOfStock > 0) && (
-                        <div className="mx-4 mb-4 p-3 rounded-xl border"
+                        <div className="mx-3 sm:mx-4 mb-3 sm:mb-4 p-3 rounded-xl border"
                             style={{ background: 'linear-gradient(135deg,#fff7ed,#fef3c7)', borderColor: '#fed7aa' }}>
                             <p className="text-xs font-bold text-orange-600 flex items-center gap-1.5 mb-0.5">
                                 <MdWarning /> Stock Alert
@@ -482,6 +487,7 @@ const AdminDashboard = () => {
                     )}
                 </div>
             </div>
+
         </AdminLayout>
     )
 }
